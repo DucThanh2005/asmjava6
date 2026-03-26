@@ -3,10 +3,12 @@ package com.example.carstore.controller;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,14 +38,36 @@ public class CarController {
     public String save(@ModelAttribute Car car, @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             if (file != null && !file.isEmpty()) {
+                String original = StringUtils.cleanPath(file.getOriginalFilename());
+                String ext = "";
+                int dot = original.lastIndexOf('.');
+                if (dot > 0) {
+                    ext = original.substring(dot);
+                }
+                String filename = java.util.UUID.randomUUID().toString() + ext;
+
                 Path imagesDir = Paths.get("src/main/resources/static/images");
                 Files.createDirectories(imagesDir);
-                Path target = imagesDir.resolve(file.getOriginalFilename());
-                file.transferTo(target.toFile());
-                car.setImage(file.getOriginalFilename());
+                Path dest = imagesDir.resolve(filename);
+                file.transferTo(dest.toFile());
+
+                // Nếu chạy từ IDE fallback tới target/classes (maven run) giúp hiển thị luôn
+                Path runtimeDir = Paths.get("target/classes/static/images");
+                Files.createDirectories(runtimeDir);
+                Files.copy(dest, runtimeDir.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+
+                car.setImage(filename);
             }
+
+            // nếu không upload ảnh mới (edit) thì giữ ảnh cũ
+            if ((car.getImage() == null || car.getImage().isBlank()) && car.getId() != null) {
+                Car existing = service.findById(car.getId());
+                if (existing != null && existing.getImage() != null && !existing.getImage().isBlank()) {
+                    car.setImage(existing.getImage());
+                }
+            }
+
         } catch (Exception e) {
-            // keep flow simple for skeleton: if upload fails, still allow saving other fields
             e.printStackTrace();
         }
         service.save(car);

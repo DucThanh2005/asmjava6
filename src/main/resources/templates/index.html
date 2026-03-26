@@ -148,7 +148,8 @@
         <div class="col-12 col-md-6 col-lg-4" th:each="car : ${list}">
             <article class="ford-car-card">
                 <div class="ford-car-img">
-                    <img th:src="@{'/images/' + ${car.image}}" th:alt="${car.name}">
+                    <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}" th:alt="${car.name}">
+                    <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}" th:alt="${car.name}">
                 </div>
                 <div class="ford-car-body">
                     <div class="ford-link-muted mb-1">Hãng (Brand ID): <span th:text="${car.brandId}"></span></div>

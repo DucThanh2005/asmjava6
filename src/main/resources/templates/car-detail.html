@@ -41,7 +41,8 @@
     <div class="row g-4">
         <div class="col-12 col-md-6">
             <div class="cs-card p-3">
-                <img th:src="@{'/images/' + ${car.image}}" class="img-fluid rounded-3" alt="Car Image">
+                <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}" class="img-fluid rounded-3" alt="Car Image">
+                <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}" class="img-fluid rounded-3" alt="Car Image">
             </div>
         </div>
         <div class="col-12 col-md-6">

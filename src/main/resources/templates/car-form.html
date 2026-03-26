@@ -60,14 +60,32 @@
             </div>
 
             <div class="col-12">
+                <label class="form-label cs-muted">Description</label>
+                <textarea class="form-control" th:field="*{description}" rows="3" placeholder="Nhập mô tả xe"></textarea>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label class="form-label cs-muted">Year</label>
+                <input class="form-control" type="number" th:field="*{year}" placeholder="2024" />
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label class="form-label cs-muted">Color</label>
+                <input class="form-control" type="text" th:field="*{color}" placeholder="Màu sắc" />
+            </div>
+
+            <div class="col-12">
                 <label class="form-label cs-muted">Image</label>
                 <input class="form-control" type="file" name="file" />
                 <div class="form-text cs-muted">Ảnh sẽ lưu vào thư mục `static/images` và hiển thị ở trang list/home.</div>
             </div>
 
-            <div class="col-12" th:if="${car.image != null}">
+            <div class="col-12">
                 <div class="cs-muted mb-2">Preview</div>
-                <img th:src="@{'/images/' + ${car.image}}" class="img-fluid rounded-3" style="max-height:220px; border:1px solid rgba(255,255,255,.12);" />
+                <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}"
+                     class="img-fluid rounded-3" style="max-height:220px; border:1px solid rgba(255,255,255,.12);" />
+                <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}"
+                     class="img-fluid rounded-3" style="max-height:220px; border:1px solid rgba(255,255,255,.12);" />
             </div>
 
             <div class="col-12 d-flex gap-2">

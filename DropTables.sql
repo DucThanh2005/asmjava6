@@ -1,9 +1,19 @@
-USE CarStore;
+-- ===============================================
+-- XOÁ DATABASE CARSTORE
+-- ===============================================
+
+USE master;
 GO
 
-DROP TABLE IF EXISTS OrderDetail;
-DROP TABLE IF EXISTS Orders;
-DROP TABLE IF EXISTS Car;
-DROP TABLE IF EXISTS Account;
-DROP TABLE IF EXISTS Brand;
+IF EXISTS (SELECT * FROM sys.databases WHERE name = 'CarStore')
+BEGIN
+    PRINT 'Đang xoá database CarStore...';
+    ALTER DATABASE CarStore SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE CarStore;
+    PRINT 'Xoá database CarStore thành công! ✓';
+END
+ELSE
+BEGIN
+    PRINT 'Database CarStore không tồn tại.';
+END
 GO

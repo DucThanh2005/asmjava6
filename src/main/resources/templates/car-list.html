@@ -55,7 +55,11 @@
                 <tbody>
                 <tr th:each="car : ${list}">
                     <td>
-                        <img th:src="@{'/images/' + ${car.image}}" class="rounded-3"
+                        <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}"
+                             class="rounded-3"
+                             style="width:100px;height:64px;object-fit:cover;border:1px solid rgba(255,255,255,.12);">
+                        <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}"
+                             class="rounded-3"
                              style="width:100px;height:64px;object-fit:cover;border:1px solid rgba(255,255,255,.12);">
                     </td>
                     <td class="fw-semibold" th:text="${car.name}"></td>
