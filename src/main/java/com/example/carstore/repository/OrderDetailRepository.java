@@ -1,0 +1,18 @@
+package com.example.carstore.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.util.List;
+
+import com.example.carstore.entity.OrderDetail;
+
+public interface OrderDetailRepository extends JpaRepository<OrderDetail, Integer> {
+
+    // 💰 Tổng doanh thu
+    @Query("SELECT SUM(d.price*d.quantity) FROM OrderDetail d")
+    Double getRevenue();
+
+    // 🔥 Top xe bán chạy
+    @Query("SELECT d.car_id, SUM(d.quantity) FROM OrderDetail d GROUP BY d.car_id ORDER BY SUM(d.quantity) DESC")
+    List<Object[]> topCars();
+}
