@@ -7,16 +7,17 @@ import javax.persistence.*;
 public class OrderDetail {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    Integer order_id;
+    @Column(name = "order_id")
+    Integer orderId;
     Integer car_id;
     Double price;
     Integer quantity;
 
     public OrderDetail() {}
 
-    public OrderDetail(Integer id, Integer order_id, Integer car_id, Double price, Integer quantity) {
+    public OrderDetail(Integer id, Integer orderId, Integer car_id, Double price, Integer quantity) {
         this.id = id;
-        this.order_id = order_id;
+        this.orderId = orderId;
         this.car_id = car_id;
         this.price = price;
         this.quantity = quantity;
@@ -30,12 +31,12 @@ public class OrderDetail {
         this.id = id;
     }
 
-    public Integer getOrder_id() {
-        return order_id;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public Integer getCar_id() {

@@ -8,6 +8,8 @@ import com.example.carstore.entity.OrderDetail;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Integer> {
 
+    List<OrderDetail> findByOrderId(Integer orderId);
+
     // 💰 Tổng doanh thu
     @Query("SELECT SUM(d.price*d.quantity) FROM OrderDetail d")
     Double getRevenue();

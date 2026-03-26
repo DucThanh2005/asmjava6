@@ -65,6 +65,10 @@
             <div class="cs-muted">Tổng tiền</div>
             <div class="h4 mb-0 fw-bold" th:text="${total}">0</div>
         </div>
+
+        <div class="mt-3" th:if="${!#lists.isEmpty(cart)}">
+            <a href="/order/checkout" class="btn cs-btn cs-btn-primary">Thanh toán</a>
+        </div>
     </div>
 </div>
 

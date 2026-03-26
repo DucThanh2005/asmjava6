@@ -61,4 +61,14 @@ public class CarController {
         service.delete(id);
         return "redirect:/car/list";
     }
+
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable Integer id, Model model) {
+        Car car = service.findById(id);
+        if (car == null) {
+            return "redirect:/car/list";
+        }
+        model.addAttribute("car", car);
+        return "car-detail";
+    }
 }

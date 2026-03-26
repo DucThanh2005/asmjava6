@@ -25,6 +25,9 @@
             <a sec:authorize="isAnonymous()" href="/login" class="ford-icon-btn" title="Tài khoản" aria-label="Đăng nhập">
                 <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </a>
+            <a sec:authorize="isAuthenticated()" href="/profile" class="ford-icon-btn" title="Tài khoản" aria-label="Tài khoản">
+                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </a>
             <a sec:authorize="isAuthenticated()" href="/logout" class="ford-icon-btn" title="Đăng xuất" aria-label="Đăng xuất">
                 <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </a>
@@ -43,6 +46,23 @@
         </form>
     </div>
 </header>
+
+<section class="ford-intro">
+    <div class="ford-intro-grid">
+        <div class="ford-intro-text">
+            <small class="ford-badge">Vạn Dặm Hạnh Thông</small>
+            <h1>Vươn Tầm Cùng Ford</h1>
+            <p>Khám phá dải sản phẩm Ford đang chờ bạn. Đặt xe nhanh, trải nghiệm siêu phẩm, phục vụ tận nơi trên toàn quốc.</p>
+            <div class="ford-intro-actions">
+                <a class="ford-btn-primary" href="/car/list">Tìm hiểu thêm</a>
+                <a class="ford-btn-outline" href="/car/list">So sánh</a>
+            </div>
+        </div>
+        <div class="ford-intro-image">
+            <img src="/images/ranger-hero.jpg" alt="Ford Ranger" onerror="this.src='/images/camry.jpg'" />
+        </div>
+    </div>
+</section>
 
 <section class="ford-hero" id="fordHero">
     <div class="ford-hero-slide is-active" data-slide="0" style="background-image:url('/images/hero-banner.png');">
@@ -69,6 +89,43 @@
     <div class="ford-hero-arrows">
         <button type="button" class="ford-carousel-btn ford-hero-prev" aria-label="Slide trước">‹</button>
         <button type="button" class="ford-carousel-btn ford-hero-next" aria-label="Slide sau">›</button>
+    </div>
+</section>
+
+<section class="ford-models">
+    <div class="ford-section-head">
+        <div>
+            <h2>Ranger Models</h2>
+            <p class="ford-models-meta">Phiên bản, cỡ gói và các lựa chọn hàng đầu</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <a class="ford-btn-outline" href="/car/list">So sánh</a>
+        </div>
+    </div>
+    <div class="row align-items-start gx-4 gy-4">
+        <div class="col-12 col-lg-4">
+            <nav class="ford-model-nav">
+                <a href="#" class="active">Raptor</a>
+                <a href="#">Stormtrak</a>
+                <a href="#">Wildtrak</a>
+                <a href="#">Sport</a>
+                <a href="#">XLS</a>
+            </nav>
+        </div>
+        <div class="col-12 col-lg-8">
+            <article class="ford-model-card">
+                <img src="/images/ranger-raptor.jpg" alt="Ford Ranger Raptor" onerror="this.src='/images/camry.jpg'" />
+                <div class="ford-model-copy">
+                    <h3>Raptor</h3>
+                    <p>Giá ưu đãi mới nhất tại Ford Raptor 2026 tại Hà Nội – sẵn xe bàn giao ngay.</p>
+                    <strong>1.556.169.000 VND</strong>
+                    <div class="ford-model-actions">
+                        <a class="ford-btn-primary" th:href="@{'/car/detail/' + ${#lists.isEmpty(list) ? 1 : list.get(0).id}}">Bắt đầu mua xe</a>
+                        <a class="ford-btn-outline" th:href="@{'/car/detail/' + ${#lists.isEmpty(list) ? 1 : list.get(0).id}}">Xem chi tiết</a>
+                    </div>
+                </div>
+            </article>
+        </div>
     </div>
 </section>
 
@@ -100,6 +157,7 @@
                         <span th:text="${car.price}"></span> VND
                     </div>
                     <div class="d-flex flex-wrap gap-2">
+                        <a class="ford-btn-primary" th:href="@{'/car/detail/' + ${car.id}}">Xem chi tiết</a>
                         <a class="ford-btn-outline" th:href="@{'/cart/add/' + ${car.id}}">Thêm giỏ</a>
                         <a class="ford-btn-outline" th:href="@{'/car/edit/' + ${car.id}}" sec:authorize="hasRole('ADMIN')">Sửa</a>
                     </div>
@@ -140,8 +198,60 @@
     var next = document.querySelector('.ford-hero-next');
     if (prev) prev.addEventListener('click', function () { show(i - 1); });
     if (next) next.addEventListener('click', function () { show(i + 1); });
+
+    // Auto play every 1 second
+    var heroTimer = setInterval(function () {
+        show(i + 1);
+    }, 2000);
+
+    // Optional: pause on hover
+    var heroSection = document.getElementById('fordHero');
+    if (heroSection) {
+        heroSection.addEventListener('mouseenter', function () { clearInterval(heroTimer); });
+        heroSection.addEventListener('mouseleave', function () {
+            heroTimer = setInterval(function () { show(i + 1); }, 1000);
+        });
+    }
 })();
 </script>
+
+<footer class="ford-footer">
+    <div class="ford-footer-grid">
+        <div>
+            <h4>Sản Phẩm</h4>
+            <ul>
+                <li><a href="#">Xe SUV</a></li>
+                <li><a href="#">Xe Thương Mại</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Mua Xe</h4>
+            <ul>
+                <li><a href="#">Quản lý đặt cọc</a></li>
+                <li><a href="#">Kiểm tra xe có sẵn</a></li>
+                <li><a href="#">Lựa chọn mẫu xe &amp; báo giá</a></li>
+                <li><a href="#">Chương trình khuyến mãi</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Dịch Vụ</h4>
+            <ul>
+                <li><a href="#">Đặt lịch dịch vụ trực tuyến</a></li>
+                <li><a href="#">Báo giá tạm tính</a></li>
+                <li><a href="#">Quy trình bảo dưỡng nhanh</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>FORD VIỆT NAM</h4>
+            <ul>
+                <li><a href="#">Lịch sử công ty</a></li>
+                <li><a href="#">Nhà máy</a></li>
+                <li><a href="#">Tin tức &amp; Sự kiện</a></li>
+                <li><a href="#">Hoạt động cộng đồng</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

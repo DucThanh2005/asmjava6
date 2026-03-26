@@ -23,10 +23,14 @@ public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvi
 
         .authorizeRequests()
             .antMatchers("/", "/login/**", "/signup/**", "/css/**", "/js/**", "/oauth2/**").permitAll()
-            // Chỉ ADMIN mới được thêm/sửa/xóa xe (màn Thymeleaf)
+            // MVC pages for SEO: car list and detail
+            .antMatchers("/car/list", "/car/detail/**").permitAll()
+            // Admin MVC
             .antMatchers("/car/create", "/car/save", "/car/edit/**", "/car/delete/**").hasRole("ADMIN")
-            .antMatchers("/admin/**", "/api/cars/**").hasRole("ADMIN")
-            .antMatchers("/api/orders/**").authenticated()
+            .antMatchers("/admin/**").hasRole("ADMIN")
+            // REST APIs
+            .antMatchers("/api/cars/**", "/api/admin/**").hasRole("ADMIN")
+            .antMatchers("/api/cart/**", "/api/orders/**", "/api/profile/**").authenticated()
             .anyRequest().permitAll()
         .and()
 

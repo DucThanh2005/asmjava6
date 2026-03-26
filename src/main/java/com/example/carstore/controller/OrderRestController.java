@@ -30,7 +30,7 @@ public class OrderRestController {
 
         for(Map<String,Object> item : cart){
             OrderDetail d = new OrderDetail();
-            d.setOrder_id(order.getId());
+            d.setOrderId(order.getId());
             d.setCar_id((Integer)item.get("id"));
             d.setPrice(Double.valueOf(item.get("price").toString()));
             d.setQuantity(Integer.valueOf(item.get("qty").toString()));

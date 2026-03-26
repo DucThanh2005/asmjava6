@@ -156,9 +156,37 @@ body a:hover {
   inset: 0;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: auto;
   opacity: 0;
   transition: opacity 0.6s ease;
   pointer-events: none;
+}
+.ford-hero-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.07); /* Giảm overlay cho ảnh rõ hơn */
+  z-index: 1;
+}
+.ford-hero-copy {
+  position: absolute;
+  left: 48px;
+  bottom: 100px;
+  z-index: 2;
+  max-width: 520px;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ford-hero-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  filter: none; /* Đảm bảo không bị mờ */
+}
+
+.ford-hero-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
 }
 .ford-hero-slide.is-active {
   opacity: 1;
@@ -500,4 +528,170 @@ a {
 
 a:hover {
   color: #0e3f8a;
+}
+
+.ford-intro {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e6f2ff 100%);
+  padding: 60px 24px;
+}
+.ford-intro-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+.ford-intro .ford-badge {
+  display: inline-block;
+  background: #eff6ff;
+  color: #1351b4;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+}
+.ford-intro h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.ford-intro p {
+  color: #334155;
+  margin: 18px 0 24px;
+  font-size: 1.1rem;
+}
+.ford-intro-actions {
+  display: flex;
+  gap: 12px;
+}
+.ford-intro-image img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  min-height: 320px;
+}
+
+.ford-models {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+.ford-models-meta {
+  color: #64748b;
+  margin-top: 4px;
+}
+.ford-model-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+  border-radius: 12px;
+}
+.ford-model-nav a {
+  color: #0f172a;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+  padding: 8px;
+  transition: all 0.2s;
+}
+.ford-model-nav a.active,
+.ford-model-nav a:hover {
+  color: #0f4eb0;
+  border-left-color: #0f4eb0;
+  background: #e0e7ff;
+}
+.ford-model-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  gap: 16px;
+  background: #fff;
+}
+.ford-model-card img {
+  width: 330px;
+  height: 240px;
+  object-fit: cover;
+}
+.ford-model-copy {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ford-model-copy h3 {
+  margin: 0;
+  font-size: 1.65rem;
+}
+.ford-model-copy strong {
+  color: #0f4eb0;
+  font-size: 1.25rem;
+  margin-top: 4px;
+}
+.ford-model-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.ford-footer {
+  background: #f8fafc;
+  border-top: 1px solid #e5e7eb;
+  padding: 36px 24px;
+}
+.ford-footer-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 24px;
+}
+.ford-footer h4 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.ford-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.ford-footer a {
+  color: #334155;
+  font-size: 0.92rem;
+}
+.ford-footer a:hover {
+  color: #0f4eb0;
+}
+
+@media (max-width: 991px) {
+  .ford-intro-grid {
+    grid-template-columns: 1fr;
+  }
+  .ford-model-card {
+    flex-direction: column;
+  }
+  .ford-model-card img {
+    width: 100%;
+    height: 210px;
+  }
+  .ford-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ford-footer-grid {
+    grid-template-columns: 1fr;
+  }
 }
