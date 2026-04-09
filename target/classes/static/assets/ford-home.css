@@ -1,6 +1,31 @@
 /* Trang chủ kiểu OEM: header trắng + hero banner + tìm kiếm */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
+
+.ford-video-hero {
+  width: 100%;
+  height: auto;
+  border-radius: 20px; /* Bo góc giống thiết kế hiện tại */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15); /* Tạo bóng đổ cho sang trọng */
+  object-fit: cover; /* Đảm bảo video lấp đầy khung hình */
+}
+
+/* Hiệu ứng mờ dần khi tải trang */
+.ford-intro-image {
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+
+
 body {
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   background: #f4f4f5;
