@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Car Store</title>
+    <title>Car Store | Vươn Tầm Cùng Ford</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -10,249 +10,137 @@
 </head>
 <body class="page-home">
 
-<header class="ford-header">
-    <div class="ford-header-inner">
-        <nav class="ford-nav-left">
-            <a href="/car/list">Sản phẩm</a>
-            <a href="/cart/view">Mua xe</a>
-            <a href="#">Dịch vụ &amp; Hỗ trợ</a>
-        </nav>
-        <a class="ford-logo" href="/">CarStore</a>
-        <div class="ford-nav-right">
-            <a href="/car/list" class="ford-icon-btn" title="Đại lý / Danh sách" aria-label="Đại lý">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </a>
-            <a sec:authorize="isAnonymous()" href="/login" class="ford-icon-btn" title="Tài khoản" aria-label="Đăng nhập">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </a>
-            <a sec:authorize="isAuthenticated()" href="/profile" class="ford-icon-btn" title="Tài khoản" aria-label="Tài khoản">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </a>
-            <a sec:authorize="isAuthenticated()" href="/logout" class="ford-icon-btn" title="Đăng xuất" aria-label="Đăng xuất">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            </a>
-            <button type="button" class="ford-icon-btn" id="fordSearchToggle" title="Tìm kiếm" aria-label="Tìm kiếm"
-                    th:attr="aria-expanded=${q != null and !#strings.isEmpty(#strings.trim(q))} ? 'true' : 'false'">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </button>
+    <header class="ford-header">
+        <div class="ford-header-inner">
+            <nav class="ford-nav-left">
+                <a href="/car/list">Sản phẩm</a>
+                <a href="/cart/view">Mua xe</a>
+                <a href="#">Dịch vụ &amp; Hỗ trợ</a>
+            </nav>
+            <a class="ford-logo" href="/">CarStore</a>
+            <div class="ford-nav-right">
+                <a href="/car/list" class="ford-icon-btn" title="Đại lý / Danh sách" aria-label="Đại lý">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </a>
+                <a sec:authorize="isAnonymous()" href="/login" class="ford-icon-btn" title="Tài khoản" aria-label="Đăng nhập">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </a>
+                <a sec:authorize="isAuthenticated()" href="/profile" class="ford-icon-btn" title="Tài khoản" aria-label="Tài khoản">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="ford-icon-btn" title="Đăng xuất" aria-label="Đăng xuất">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </a>
+                <button type="button" class="ford-icon-btn" id="fordSearchToggle" title="Tìm kiếm" aria-label="Tìm kiếm"
+                        th:attr="aria-expanded=${q != null and !#strings.isEmpty(#strings.trim(q))} ? 'true' : 'false'">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="ford-search-row" id="fordSearchBar" aria-hidden="true"
-         th:classappend="${q != null and !#strings.isEmpty(#strings.trim(q))} ? ' is-open' : ''"
-         th:attr="aria-hidden=${q != null and !#strings.isEmpty(#strings.trim(q))} ? 'false' : 'true'">
-        <form class="ford-search-form" method="get" th:action="@{/}">
-            <input type="search" name="q" th:value="${q}" placeholder="Tìm kiếm theo tên xe..." autocomplete="off">
-            <button type="submit">Tìm</button>
-        </form>
-    </div>
-</header>
+        <div class="ford-search-row" id="fordSearchBar" aria-hidden="true"
+             th:classappend="${q != null and !#strings.isEmpty(#strings.trim(q))} ? ' is-open' : ''"
+             th:attr="aria-hidden=${q != null and !#strings.isEmpty(#strings.trim(q))} ? 'false' : 'true'">
+            <form class="ford-search-form" method="get" th:action="@{/}">
+                <input type="search" name="q" th:value="${q}" placeholder="Tìm kiếm theo tên xe..." autocomplete="off">
+                <button type="submit">Tìm</button>
+            </form>
+        </div>
+    </header>
 
 <section class="ford-intro">
     <div class="ford-intro-grid">
-        <div class="ford-intro-text">
-            <small class="ford-badge">Vạn Dặm Hạnh Thông</small>
-            <h1>Vươn Tầm Cùng Ford</h1>
-            <p>Khám phá dải sản phẩm Ford đang chờ bạn. Đặt xe nhanh, trải nghiệm siêu phẩm, phục vụ tận nơi trên toàn quốc.</p>
+        <div class="ford-intro-text text-center text-lg-start">
+            <small class="ford-badge text-uppercase fw-bold">Trải nghiệm đỉnh cao</small>
+            <h1 class="display-4 fw-bold">Khai Phá Mọi Hành Trình</h1>
+            <p class="lead">Khám phá các dòng xe Ford mới nhất. Đặt cọc online, nhận xe tận nhà cùng nhiều ưu đãi hấp dẫn.</p>
             <div class="ford-intro-actions">
-                <a class="ford-btn-primary" href="/car/list">Tìm hiểu thêm</a>
-                <a class="ford-btn-outline" href="/car/list">So sánh</a>
+                <a class="ford-btn-primary" href="/car/list">Xem tất cả xe</a>
+                <a class="ford-btn-outline" href="/cart/view">Giỏ hàng của bạn</a>
             </div>
         </div>
         <div class="ford-intro-image">
-            <img src="/images/ranger-hero.jpg" alt="Ford Ranger" onerror="this.src='/images/camry.jpg'" />
+            <img src="/images/ranger-hero.jpg" alt="Hero Image" onerror="this.src='https://placehold.co/800x450?text=Ford+Premium'">
         </div>
     </div>
 </section>
 
-<section class="ford-hero" id="fordHero">
-    <div class="ford-hero-slide is-active" data-slide="0" style="background-image:url('/images/hero-banner.png');">
-        <div class="ford-hero-copy">
-            <h1>Mustang Mach-E</h1>
-            <p>Chỉ bạn có thể</p>
-            <a class="ford-cta" href="/car/list">Tìm hiểu thêm</a>
-        </div>
-    </div>
-    <div class="ford-hero-slide" data-slide="1" style="background-image:url('/images/camry.jpg');">
-        <div class="ford-hero-copy">
-            <h1>Toyota Camry</h1>
-            <p>Sedan cao cấp cho mọi hành trình</p>
-            <a class="ford-cta" href="/car/list">Tìm hiểu thêm</a>
-        </div>
-    </div>
-    <div class="ford-hero-slide" data-slide="2" style="background-image:url('/images/x5.jpg');">
-        <div class="ford-hero-copy">
-            <h1>BMW X5</h1>
-            <p>SUV sang trọng, đầy cảm hứng</p>
-            <a class="ford-cta" href="/car/list">Tìm hiểu thêm</a>
-        </div>
-    </div>
-    <div class="ford-hero-arrows">
-        <button type="button" class="ford-carousel-btn ford-hero-prev" aria-label="Slide trước">‹</button>
-        <button type="button" class="ford-carousel-btn ford-hero-next" aria-label="Slide sau">›</button>
-    </div>
-</section>
-
-<section class="ford-models">
-    <div class="ford-section-head">
+<div class="ford-section container">
+    <div class="ford-section-head d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h2>Ranger Models</h2>
-            <p class="ford-models-meta">Phiên bản, cỡ gói và các lựa chọn hàng đầu</p>
-        </div>
-        <div class="d-flex gap-2 align-items-center">
-            <a class="ford-btn-outline" href="/car/list">So sánh</a>
-        </div>
-    </div>
-    <div class="row align-items-start gx-4 gy-4">
-        <div class="col-12 col-lg-4">
-            <nav class="ford-model-nav">
-                <a href="#" class="active">Raptor</a>
-                <a href="#">Stormtrak</a>
-                <a href="#">Wildtrak</a>
-                <a href="#">Sport</a>
-                <a href="#">XLS</a>
-            </nav>
-        </div>
-        <div class="col-12 col-lg-8">
-            <article class="ford-model-card">
-                <img src="/images/ranger-raptor.jpg" alt="Ford Ranger Raptor" onerror="this.src='/images/camry.jpg'" />
-                <div class="ford-model-copy">
-                    <h3>Raptor</h3>
-                    <p>Giá ưu đãi mới nhất tại Ford Raptor 2026 tại Hà Nội – sẵn xe bàn giao ngay.</p>
-                    <strong>1.556.169.000 VND</strong>
-                    <div class="ford-model-actions">
-                        <a class="ford-btn-primary" th:href="@{'/car/detail/' + ${#lists.isEmpty(list) ? 1 : list.get(0).id}}">Bắt đầu mua xe</a>
-                        <a class="ford-btn-outline" th:href="@{'/car/detail/' + ${#lists.isEmpty(list) ? 1 : list.get(0).id}}">Xem chi tiết</a>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </div>
-</section>
-
-<div class="ford-section">
-    <div class="ford-section-head">
-        <div>
-            <h2>Xe nổi bật</h2>
+            <h2 class="fw-bold">Sản phẩm nổi bật</h2>
             <div class="ford-section-meta" th:if="${q != null and !#strings.isEmpty(q)}">
-                Kết quả tìm “<span th:text="${q}"></span>” · <a th:href="@{/}">Xóa bộ lọc</a>
+                Tìm kiếm: “<span th:text="${q}" class="text-primary fw-bold"></span>” · <a th:href="@{/}" class="text-decoration-none">Xóa bộ lọc</a>
             </div>
         </div>
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <a class="ford-btn-outline" href="/car/list">Xem tất cả</a>
-            <a class="ford-btn-primary-sm" href="/car/create" sec:authorize="hasRole('ADMIN')">Thêm xe</a>
-            <a class="ford-btn-outline" href="/admin/dashboard" sec:authorize="hasRole('ADMIN')">Thống kê</a>
+        <div class="d-flex gap-2">
+            <a class="ford-btn-primary-sm" href="/car/create" sec:authorize="hasRole('ADMIN')">Thêm xe mới</a>
+            <a class="ford-btn-outline" href="/admin/dashboard" sec:authorize="hasRole('ADMIN')">Báo cáo</a>
         </div>
     </div>
 
     <div class="row g-4">
         <div class="col-12 col-md-6 col-lg-4" th:each="car : ${list}">
-            <article class="ford-car-card">
+            <article class="ford-car-card h-100 shadow-sm">
                 <div class="ford-car-img">
-                    <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}" th:alt="${car.name}">
-                    <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}" th:alt="${car.name}">
+                    <img th:src="${car.image != null ? '/images/' + car.image : '/images/camry.jpg'}" th:alt="${car.name}">
                 </div>
-                <div class="ford-car-body">
-                    <div class="ford-link-muted mb-1">Hãng (Brand ID): <span th:text="${car.brandId}"></span></div>
-                    <h3 class="h5 fw-bold mb-2" th:text="${car.name}"></h3>
-                    <div class="ford-price-tag mb-3">
-                        <span th:text="${car.price}"></span> VND
+                <div class="ford-car-body p-4">
+                    <small class="text-muted text-uppercase" th:text="${'Mã hãng: ' + car.brandId}">Brand</small>
+                    <h3 class="h5 fw-bold my-2" th:text="${car.name}"></h3>
+                    
+                    <div class="ford-price-tag mb-3 fs-5 text-danger fw-bold">
+                        <span th:text="${#numbers.formatDecimal(car.price, 0, 'COMMA', 0, 'POINT')}"></span> <small>VNĐ</small>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a class="ford-btn-primary" th:href="@{'/car/detail/' + ${car.id}}">Xem chi tiết</a>
-                        <a class="ford-btn-outline" th:href="@{'/cart/add/' + ${car.id}}">Thêm giỏ</a>
-                        <a class="ford-btn-outline" th:href="@{'/car/edit/' + ${car.id}}" sec:authorize="hasRole('ADMIN')">Sửa</a>
+
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a class="ford-btn-primary w-100" th:href="@{'/car/detail/' + ${car.id}}">Chi tiết</a>
+                        <a class="ford-btn-outline w-100" th:href="@{'/cart/add/' + ${car.id}}">Đặt cọc</a>
+                    </div>
+                    <div class="mt-2 text-center" sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{'/car/edit/' + ${car.id}}" class="btn btn-sm btn-link text-secondary">Chỉnh sửa xe</a>
                     </div>
                 </div>
             </article>
         </div>
     </div>
-
-    <p class="text-center ford-section-meta mt-5 mb-0" th:if="${#lists.isEmpty(list)}">Không có xe phù hợp. Thử từ khóa khác hoặc <a th:href="@{/}">xem toàn bộ</a>.</p>
 </div>
 
 <script>
 (function () {
+    // Search Toggle
     var toggle = document.getElementById('fordSearchToggle');
     var bar = document.getElementById('fordSearchBar');
     if (toggle && bar) {
         toggle.addEventListener('click', function () {
             var open = !bar.classList.contains('is-open');
             bar.classList.toggle('is-open', open);
-            bar.setAttribute('aria-hidden', open ? 'false' : 'true');
-            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-            if (open) {
-                var input = bar.querySelector('input[type="search"]');
-                if (input) input.focus();
-            }
+            if (open) bar.querySelector('input').focus();
         });
     }
 
+    // Carousel Tối ưu tốc độ (4 giây cho trải nghiệm sang trọng)
     var slides = document.querySelectorAll('.ford-hero-slide');
     var i = 0;
     function show(n) {
+        if(slides.length === 0) return;
         i = (n + slides.length) % slides.length;
-        slides.forEach(function (s, j) {
-            s.classList.toggle('is-active', j === i);
-        });
+        slides.forEach((s, j) => s.classList.toggle('is-active', j === i));
     }
-    var prev = document.querySelector('.ford-hero-prev');
-    var next = document.querySelector('.ford-hero-next');
-    if (prev) prev.addEventListener('click', function () { show(i - 1); });
-    if (next) next.addEventListener('click', function () { show(i + 1); });
 
-    // Auto play every 1 second
-    var heroTimer = setInterval(function () {
-        show(i + 1);
-    }, 2000);
+    var heroTimer = setInterval(() => show(i + 1), 4000); 
 
-    // Optional: pause on hover
     var heroSection = document.getElementById('fordHero');
     if (heroSection) {
-        heroSection.addEventListener('mouseenter', function () { clearInterval(heroTimer); });
-        heroSection.addEventListener('mouseleave', function () {
-            heroTimer = setInterval(function () { show(i + 1); }, 1000);
+        heroSection.addEventListener('mouseenter', () => clearInterval(heroTimer));
+        heroSection.addEventListener('mouseleave', () => {
+            heroTimer = setInterval(() => show(i + 1), 4000);
         });
     }
 })();
 </script>
 
-<footer class="ford-footer">
-    <div class="ford-footer-grid">
-        <div>
-            <h4>Sản Phẩm</h4>
-            <ul>
-                <li><a href="#">Xe SUV</a></li>
-                <li><a href="#">Xe Thương Mại</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4>Mua Xe</h4>
-            <ul>
-                <li><a href="#">Quản lý đặt cọc</a></li>
-                <li><a href="#">Kiểm tra xe có sẵn</a></li>
-                <li><a href="#">Lựa chọn mẫu xe &amp; báo giá</a></li>
-                <li><a href="#">Chương trình khuyến mãi</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4>Dịch Vụ</h4>
-            <ul>
-                <li><a href="#">Đặt lịch dịch vụ trực tuyến</a></li>
-                <li><a href="#">Báo giá tạm tính</a></li>
-                <li><a href="#">Quy trình bảo dưỡng nhanh</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4>FORD VIỆT NAM</h4>
-            <ul>
-                <li><a href="#">Lịch sử công ty</a></li>
-                <li><a href="#">Nhà máy</a></li>
-                <li><a href="#">Tin tức &amp; Sự kiện</a></li>
-                <li><a href="#">Hoạt động cộng đồng</a></li>
-            </ul>
-        </div>
-    </div>
-</footer>
+<footer class="ford-footer mt-5">
+    </footer>
 
 </body>
 </html>
