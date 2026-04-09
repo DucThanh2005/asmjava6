@@ -4,6 +4,7 @@ com\example\carstore\controller\AuthController.class
 com\example\carstore\service\CartService.class
 com\example\carstore\entity\User.class
 com\example\carstore\controller\RestCartController.class
+com\example\carstore\service\CustomOAuth2UserService.class
 com\example\carstore\controller\ProfileController.class
 com\example\carstore\entity\CartItem.class
 com\example\carstore\entity\Orders.class
