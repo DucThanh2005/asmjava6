@@ -5,24 +5,43 @@ import javax.persistence.*;
 @Entity
 @Table(name = "orderdetail")
 public class OrderDetail {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    
     @Column(name = "order_id")
-    Integer orderId;
-    Integer car_id;
-    Double price;
-    Integer quantity;
+    private Integer orderId;
 
+    // Giữ nguyên phần liên kết đối tượng Car đã sửa
+    @ManyToOne
+    @JoinColumn(name = "car_id") 
+    private Car car;
+
+    private Double price;
+    private Integer quantity;
+
+    // Constructor không tham số (Bắt buộc phải có trong JPA)
     public OrderDetail() {}
 
-    public OrderDetail(Integer id, Integer orderId, Integer car_id, Double price, Integer quantity) {
+    // Constructor đầy đủ tham số
+    public OrderDetail(Integer id, Integer orderId, Car car, Double price, Integer quantity) {
         this.id = id;
         this.orderId = orderId;
-        this.car_id = car_id;
+        this.car = car;
         this.price = price;
         this.quantity = quantity;
     }
 
+    // Getter và Setter cho Car (Quan trọng nhất để Repository gọi được d.car.name)
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    // Các Getter và Setter còn lại
     public Integer getId() {
         return id;
     }
@@ -37,14 +56,6 @@ public class OrderDetail {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
-    }
-
-    public Integer getCar_id() {
-        return car_id;
-    }
-
-    public void setCar_id(Integer car_id) {
-        this.car_id = car_id;
     }
 
     public Double getPrice() {
