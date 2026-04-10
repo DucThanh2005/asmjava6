@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,79 +8,100 @@
     <link rel="stylesheet" th:href="@{/assets/app.css}">
     <link rel="stylesheet" th:href="@{/assets/ford-home.css}">
 </head>
+
 <body>
-<header class="ford-header">
-    <div class="ford-header-inner">
-        <nav class="ford-nav-left">
-            <a href="/car/list">Sản phẩm</a>
-            <a href="/cart/view">Mua xe</a>
-            <a href="#">Dịch vụ & Hỗ trợ</a>
-        </nav>
-        <a class="ford-logo" href="/">CarStore</a>
-        <div class="ford-nav-right">
-            <a href="/car/list" class="ford-icon-btn" title="Đại lý" aria-label="Đại lý">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </a>
-            <a href="/login" class="ford-icon-btn" title="Tài khoản" aria-label="Đăng nhập">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </a>
-            <a href="/logout" class="ford-icon-btn" title="Đăng xuất" aria-label="Đăng xuất">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            </a>
+    <header class="ford-header">
+        <div class="ford-header-inner">
+            <nav class="ford-nav-left">
+                <a href="/car/list">Sản phẩm</a>
+                <a href="/cart/view">Mua xe</a>
+                <a href="/service">Dịch vụ</a>
+                <a href="/support">Hỗ trợ</a>
+            </nav>
+            <a class="ford-logo" href="/">CarStore</a>
+            <div class="ford-nav-right">
+                <a href="/car/list" class="ford-icon-btn" title="Đại lý" aria-label="Đại lý">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                </a>
+                <a href="/login" class="ford-icon-btn" title="Tài khoản" aria-label="Đăng nhập">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <a href="/logout" class="ford-icon-btn" title="Đăng xuất" aria-label="Đăng xuất">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<div class="container cs-container py-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-7 col-lg-5">
-            <div class="cs-card">
-                <div class="cs-card-header p-4">
-                    <div class="cs-badge mb-3">🔐 Authentication</div>
-                    <h2 class="cs-page-title mb-1">Đăng nhập</h2>
-                    <div class="cs-muted">Đăng nhập để truy cập chức năng theo quyền.</div>
-                </div>
+    <div class="container cs-container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-7 col-lg-5">
+                <div class="cs-card">
+                    <div class="cs-card-header p-4">
+                        <div class="cs-badge mb-3">🔐 Authentication</div>
+                        <h2 class="cs-page-title mb-1">Đăng nhập</h2>
+                        <div class="cs-muted">Đăng nhập để truy cập chức năng theo quyền.</div>
+                    </div>
 
-                <div class="p-4">
-                    <form th:action="@{/login}" method="post" class="vstack gap-3">
-                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <div th:if="${param.error}" class="alert alert-danger">Đăng nhập không thành công, kiểm tra lại username/password.</div>
-                        <div th:if="${param.logout}" class="alert alert-success">Bạn đã đăng xuất thành công.</div>
-                        <div th:if="${param.registered}" class="alert alert-success">Đăng ký thành công. Vui lòng đăng nhập.</div>
+                    <div class="p-4">
+                        <form th:action="@{/login}" method="post" class="vstack gap-3">
+                            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                                th:value="${_csrf.token}" />
+                            <div th:if="${param.error}" class="alert alert-danger">Đăng nhập không thành công, kiểm tra
+                                lại username/password.</div>
+                            <div th:if="${param.logout}" class="alert alert-success">Bạn đã đăng xuất thành công.</div>
+                            <div th:if="${param.registered}" class="alert alert-success">Đăng ký thành công. Vui lòng
+                                đăng nhập.</div>
 
-                        <div>
-                            <label class="form-label cs-muted">Username</label>
-                            <input class="form-control" type="text" name="username" placeholder="tài khoản" required>
-                        </div>
-                        <div>
-                            <label class="form-label cs-muted">Password</label>
-                            <input class="form-control" type="password" name="password" placeholder="mật khẩu" required>
-                        </div>
+                            <div>
+                                <label class="form-label cs-muted">Username</label>
+                                <input class="form-control" type="text" name="username" placeholder="tài khoản"
+                                    required>
+                            </div>
+                            <div>
+                                <label class="form-label cs-muted">Password</label>
+                                <input class="form-control" type="password" name="password" placeholder="mật khẩu"
+                                    required>
+                            </div>
 
-                        <button class="btn cs-btn cs-btn-primary w-100" type="submit">Login</button>
-                        <a class="btn cs-btn cs-btn-ghost w-100" href="/">Về trang chủ</a>
+                            <button class="btn cs-btn cs-btn-primary w-100" type="submit">Login</button>
+                            <a class="btn cs-btn cs-btn-ghost w-100" href="/">Về trang chủ</a>
 
-                        <div class="text-center mt-3">
-                            <p class="mb-2">Hoặc đăng nhập nhanh bằng</p>
-                            <a class="btn btn-outline-danger w-100 mb-2" href="/oauth2/authorization/google">
-                                <i class="bi bi-google"></i> Đăng nhập bằng Google
-                            </a>
-                            <!-- <a class="btn btn-outline-primary w-100" href="/oauth2/authorization/facebook">
+                            <div class="text-center mt-3">
+                                <p class="mb-2">Hoặc đăng nhập nhanh bằng</p>
+                                <a class="btn btn-outline-danger w-100 mb-2" href="/oauth2/authorization/google">
+                                    <i class="bi bi-google"></i> Đăng nhập bằng Google
+                                </a>
+                                <!-- <a class="btn btn-outline-primary w-100" href="/oauth2/authorization/facebook">
                                 <i class="bi bi-facebook"></i> Đăng nhập bằng Facebook
                             </a> -->
-                        </div>
+                            </div>
 
-                        <div class="text-center mt-4">
-                            <span>Chưa có tài khoản?</span>
-                            <a href="/signup" class="fw-bold">Tạo tài khoản</a>
-                        </div>
-                    </form>
+                            <div class="text-center mt-4">
+                                <span>Chưa có tài khoản?</span>
+                                <a href="/signup" class="fw-bold">Tạo tài khoản</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+
             </div>
-         
         </div>
     </div>
-</div>
 
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,76 +9,96 @@
     <link rel="stylesheet" th:href="@{/assets/app.css}">
     <link rel="stylesheet" th:href="@{/assets/ford-home.css}">
 </head>
+
 <body>
 
-<header class="ford-header">
-    <div class="ford-header-inner">
-        <nav class="ford-nav-left">
-            <a href="/car/list">Sản phẩm</a>
-            <a href="/cart/view">Mua xe</a>
-            <a href="#">Dịch vụ & Hỗ trợ</a>
-        </nav>
-        <a class="ford-logo" href="/">CarStore</a>
-        <div class="ford-nav-right">
-            <a href="/car/list" class="ford-icon-btn" title="Đại lý" aria-label="Đại lý">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </a>
-            <a sec:authorize="isAnonymous()" href="/login" class="ford-icon-btn" title="Tài khoản" aria-label="Đăng nhập">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </a>
-            <a sec:authorize="isAuthenticated()" href="/logout" class="ford-icon-btn" title="Đăng xuất" aria-label="Đăng xuất">
-                <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            </a>
+    <header class="ford-header">
+        <div class="ford-header-inner">
+            <nav class="ford-nav-left">
+                <a href="/car/list">Sản phẩm</a>
+                <a href="/cart/view">Mua xe</a>
+                <a href="/service">Dịch vụ</a>
+                <a href="/support">Hỗ trợ</a>
+            </nav>
+            <a class="ford-logo" href="/">CarStore</a>
+            <div class="ford-nav-right">
+                <a href="/car/list" class="ford-icon-btn" title="Đại lý" aria-label="Đại lý">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                </a>
+                <a sec:authorize="isAnonymous()" href="/login" class="ford-icon-btn" title="Tài khoản"
+                    aria-label="Đăng nhập">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="ford-icon-btn" title="Đăng xuất"
+                    aria-label="Đăng xuất">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container cs-container py-4">
+        <div class="cs-hero mb-4">
+            <div class="cs-badge mb-3">🚗 Inventory</div>
+            <h1 class="cs-page-title mb-0">Danh sách xe</h1>
+            <div class="cs-muted">Dữ liệu lấy trực tiếp từ SQL Server.</div>
+        </div>
+
+        <div class="cs-card p-3 p-md-4">
+            <div class="table-responsive">
+                <table class="table cs-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:120px;">Image</th>
+                            <th>Name</th>
+                            <th class="text-center" style="width:120px;">Brand ID</th>
+                            <th class="text-end" style="width:160px;">Price</th>
+                            <th class="text-center" style="width:120px;">Detail</th>
+                            <th class="text-end" style="width:220px;" sec:authorize="hasRole('ADMIN')">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="car : ${list}">
+                            <td>
+                                <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}"
+                                    class="rounded-3"
+                                    style="width:100px;height:64px;object-fit:cover;border:1px solid rgba(255,255,255,.12);">
+                                <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}" class="rounded-3"
+                                    style="width:100px;height:64px;object-fit:cover;border:1px solid rgba(255,255,255,.12);">
+                            </td>
+                            <td class="fw-semibold" th:text="${car.name}"></td>
+                            <td class="text-center" th:text="${car.brandId}"></td>
+                            <td class="text-end" th:text="${car.price}"></td>
+                            <td class="text-center">
+                                <a th:href="@{'/car/detail/' + ${car.id}}"
+                                    class="btn cs-btn cs-btn-primary btn-sm">View</a>
+                            </td>
+                            <td class="text-end" sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{'/car/edit/' + ${car.id}}"
+                                    class="btn cs-btn cs-btn-warning btn-sm">Edit</a>
+                                <a th:href="@{'/car/delete/' + ${car.id}}"
+                                    class="btn cs-btn cs-btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</header>
-
-<div class="container cs-container py-4">
-    <div class="cs-hero mb-4">
-        <div class="cs-badge mb-3">🚗 Inventory</div>
-        <h1 class="cs-page-title mb-0">Danh sách xe</h1>
-        <div class="cs-muted">Dữ liệu lấy trực tiếp từ SQL Server.</div>
-    </div>
-
-    <div class="cs-card p-3 p-md-4">
-        <div class="table-responsive">
-            <table class="table cs-table align-middle mb-0">
-                <thead>
-                <tr>
-                    <th style="width:120px;">Image</th>
-                    <th>Name</th>
-                    <th class="text-center" style="width:120px;">Brand ID</th>
-                    <th class="text-end" style="width:160px;">Price</th>
-                    <th class="text-center" style="width:120px;">Detail</th>
-                    <th class="text-end" style="width:220px;" sec:authorize="hasRole('ADMIN')">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="car : ${list}">
-                    <td>
-                        <img th:if="${car.image} != null" th:src="@{'/images/' + ${car.image}}"
-                             class="rounded-3"
-                             style="width:100px;height:64px;object-fit:cover;border:1px solid rgba(255,255,255,.12);">
-                        <img th:if="${car.image} == null" th:src="@{/images/camry.jpg}"
-                             class="rounded-3"
-                             style="width:100px;height:64px;object-fit:cover;border:1px solid rgba(255,255,255,.12);">
-                    </td>
-                    <td class="fw-semibold" th:text="${car.name}"></td>
-                    <td class="text-center" th:text="${car.brandId}"></td>
-                    <td class="text-end" th:text="${car.price}"></td>
-                    <td class="text-center">
-                        <a th:href="@{'/car/detail/' + ${car.id}}" class="btn cs-btn cs-btn-primary btn-sm">View</a>
-                    </td>
-                    <td class="text-end" sec:authorize="hasRole('ADMIN')">
-                        <a th:href="@{'/car/edit/' + ${car.id}}" class="btn cs-btn cs-btn-warning btn-sm">Edit</a>
-                        <a th:href="@{'/car/delete/' + ${car.id}}" class="btn cs-btn cs-btn-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
 </body>
+
 </html>
