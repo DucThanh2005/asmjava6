@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cars</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/assets/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/ford-home.css}">
+</head>
+
+<body>
+
+    <header class="ford-header">
+        <div class="ford-header-inner">
+            <nav class="ford-nav-left">
+                <a href="/car/list">Sản phẩm</a>
+                <a href="/cart/view">Mua xe</a>
+                <a href="/service">Dịch vụ</a>
+                <a href="/support">Hỗ trợ</a>
+            </nav>
+            <a class="ford-logo" href="/">CarStore</a>
+            <div class="ford-nav-right">
+                <a href="/car/list" class="ford-icon-btn" title="Đại lý" aria-label="Đại lý">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                </a>
+                <a sec:authorize="isAnonymous()" href="/login" class="ford-icon-btn" title="Tài khoản"
+                    aria-label="Đăng nhập">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="ford-icon-btn" title="Đăng xuất"
+                    aria-label="Đăng xuất">
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container cs-container py-4">
+        <div class="cs-hero mb-4">
+            <div class="cs-badge mb-3">🚗 Inventory</div>
+            <h1 class="cs-page-title mb-0">Danh sách xe</h1>
+            <div class="cs-muted">Khám phá bộ sưu tập xe Ford và lựa chọn ngay mẫu xe phù hợp.</div>
+        </div>
+
+        <div class="ford-page-tabs mb-4">
+            <a class="active" href="/car/list">Sản phẩm</a>
+            <a href="/cart/view">Mua Xe</a>
+            <a href="/service">Dịch Vụ & Hỗ Trợ</a>
+        </div>
+
+        <div class="ford-inventory-grid">
+            <aside class="ford-filter-panel">
+                <div class="ford-model-nav">
+                    <a href="#" class="active">Xe SUV</a>
+                    <a href="#">Xe Thương Mại</a>
+                    <a href="#">Xe Điện</a>
+                </div>
+            </aside>
+
+            <main>
+                <div class="ford-inventory-hero mb-4">
+                    <div>
+                        <h2>Khám phá ngay các mẫu xe Ford</h2>
+                    </div>
+                    <div class="ford-hero-actions">
+                        <a href="#">Báo giá</a>
+                        <a href="#">Chọn màu xe</a>
+                        <a href="#">Lái thử</a>
+                    </div>
+                </div>
+
+                <section class="ford-category-section" id="xe-suv">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-3">
+                        <div>
+                            <h3>Xe SUV</h3>
+                            <p class="ford-category-subtitle">Những mẫu SUV ấn tượng, phong cách và mạnh mẽ cho mọi hành trình.</p>
+                        </div>
+                        <a href="#xe-thuong-mai" class="ford-link-muted">Xem thêm xe thương mại</a>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/x5.jpg" alt="Ford Explorer" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Ford Explorer</h3>
+                                    <p>Giá từ: 1,150,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/c300.jpg" alt="Ford Ranger Raptor" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Ford Ranger Raptor</h3>
+                                    <p>Giá từ: 1,299,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/camry.jpg" alt="Ford Everest" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Ford Everest</h3>
+                                    <p>Giá từ: 1,050,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ford-category-section" id="xe-thuong-mai">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-3">
+                        <div>
+                            <h3>Xe Thương Mại</h3>
+                            <p class="ford-category-subtitle">Dòng xe thương mại bền bỉ, tải lớn và phù hợp cho doanh nghiệp vận tải.</p>
+                        </div>
+                        <a href="#xe-dien" class="ford-link-muted">Xem thêm xe điện</a>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/hero-banner1.png" alt="Transit Hoàn Toàn Mới" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Transit Hoàn Toàn Mới</h3>
+                                    <p>Giá từ: 907,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/x5.jpg" alt="Ford Ranger" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Ford Ranger</h3>
+                                    <p>Giá từ: 707,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/civic.jpg" alt="Ford Transit 350" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Transit 350</h3>
+                                    <p>Giá từ: 980,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ford-category-section" id="xe-dien">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-3">
+                        <div>
+                            <h3>Xe Điện</h3>
+                            <p class="ford-category-subtitle">Tương lai xanh với những mẫu xe điện hiện đại và thân thiện môi trường.</p>
+                        </div>
+                        <a href="#xe-suv" class="ford-link-muted">Trở về SUV</a>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/c300.jpg" alt="Mustang Mach-E" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Mustang Mach-E</h3>
+                                    <p>Giá từ: 1,520,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/camry.jpg" alt="E-Transit" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>E-Transit</h3>
+                                    <p>Giá từ: 1,080,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="ford-vehicle-card">
+                                <div class="ford-vehicle-card-media">
+                                    <img src="/images/hero-banner.png" alt="Ford Electric" />
+                                </div>
+                                <div class="ford-vehicle-card-body">
+                                    <h3>Ford Electric</h3>
+                                    <p>Giá từ: 1,150,000,000 VNĐ</p>
+                                    <a class="ford-link-action" href="/car/list">Bắt đầu mua xe</a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+</body>
+
+</html>
