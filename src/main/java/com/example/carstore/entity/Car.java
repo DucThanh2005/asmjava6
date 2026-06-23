@@ -15,6 +15,7 @@ public class Car {
     private String image;
     private String description;
     private Integer brandId;
+    @Column(name = "\"year\"")
     private Integer year;
     private String color;
 

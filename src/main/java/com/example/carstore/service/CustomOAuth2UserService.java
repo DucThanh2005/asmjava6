@@ -3,7 +3,7 @@ package com.example.carstore.service;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 // SỬA DÒNG DƯỚI ĐÂY:
-import org.springframework.security.oauth2.core.user.OAuth2User; 
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +18,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) {
-        // Phương thức super.loadUser(request) sẽ gọi đến Google/Facebook để lấy thông tin
+        // Phương thức super.loadUser(request) sẽ gọi đến Google/Facebook để lấy thông
+        // tin
         OAuth2User user = super.loadUser(request);
 
         String email = user.getAttribute("email");
@@ -30,15 +31,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Account newAcc = new Account();
             newAcc.setEmail(email);
             newAcc.setUsername(email); // Nên dùng email làm username để tránh trùng
-            newAcc.setFullname(name);  // Đảm bảo set fullname từ Google
-            newAcc.setPassword(""); 
-           
+            newAcc.setFullname(name); // Đảm bảo set fullname từ Google
+            newAcc.setPassword("{noop}oauth2");
+
             // GÁN ROLE USER
             newAcc.setRole("ROLE_USER");
 
             accountRepo.save(newAcc);
         }
 
+        if (email == null) {
+            throw new RuntimeException("Google account does not provide email");
+        }
         return user;
     }
 }

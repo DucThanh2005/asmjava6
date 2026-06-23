@@ -1,17 +1,24 @@
 package com.example.carstore.controller;
 
-import com.example.carstore.mode.SupportRequest;
+import com.example.carstore.entity.SupportRequest;
+import com.example.carstore.repository.SupportRequestRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class ServiceController {
 
-    List<SupportRequest> list = new ArrayList<>();
+    private final SupportRequestRepository supportRepo;
+
+    ServiceController(SupportRequestRepository supportRepo) {
+        this.supportRepo = supportRepo;
+    }
+
+    @GetMapping("/service/book")
+    public String serviceBook() {
+        return "redirect:http://localhost:5173/car/services";
+    }
 
     @GetMapping("/service")
     public String service() {
@@ -33,7 +40,7 @@ public class ServiceController {
             Model model) {
 
         SupportRequest req = new SupportRequest(name, phone, type, content);
-        list.add(req);
+        supportRepo.save(req);
 
         model.addAttribute("message", "Gửi thành công!");
         model.addAttribute("type", type);
@@ -43,15 +50,28 @@ public class ServiceController {
 
     // Xem danh sách yêu cầu
     @GetMapping("/history")
-    public String history(Model model) {
-        model.addAttribute("list", list);
+    public String history(
+            @RequestParam(required = false) String type,
+            Model model) {
+
+        if (type != null) {
+            model.addAttribute("list",
+                    supportRepo.findByTypeIgnoreCase(type));
+        } else {
+            model.addAttribute("list",
+                    supportRepo.findAll());
+        }
+
         return "history";
     }
 
     // Giả lập xử lý xong
-    @GetMapping("/done/{index}")
-    public String done(@PathVariable int index) {
-        list.get(index).setStatus("Đã xử lý");
+    @GetMapping("/done/{id}")
+    public String done(@PathVariable Integer id) {
+        supportRepo.findById(id).ifPresent(req -> {
+            req.setStatus("Đã xử lý");
+            supportRepo.save(req);
+        });
         return "redirect:/history";
     }
 }

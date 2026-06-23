@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.carstore.entity.Car;
 import com.example.carstore.entity.CartItem;
 import com.example.carstore.entity.OrderDetail;
 import com.example.carstore.entity.Orders;
 import com.example.carstore.repository.OrderRepository;
 import com.example.carstore.repository.OrderDetailRepository;
+import com.example.carstore.service.CarService;
 import com.example.carstore.service.CartService;
 
 import javax.servlet.http.HttpSession;
@@ -26,6 +28,9 @@ public class OrderController {
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    CarService carService;
 
     @Autowired
     OrderRepository orderRepo;
@@ -67,8 +72,15 @@ public class OrderController {
         order.setStatus("PENDING");
         orderRepo.save(order);
 
-        // Note: In a real app, save order details to OrderDetail table
-        // For simplicity, we'll assume OrderRestController handles it, but here we need to integrate
+        for (CartItem item : cartService.getCart(session).values()) {
+            OrderDetail detail = new OrderDetail();
+            detail.setOrderId(order.getId());
+            Car car = carService.findById(item.getId());
+            detail.setCar(car);
+            detail.setPrice(item.getPrice());
+            detail.setQuantity(item.getQuantity());
+            detailRepo.save(detail);
+        }
 
         // Clear cart
         session.removeAttribute("cart");
@@ -98,8 +110,10 @@ public class OrderController {
             return "redirect:/order/my-orders";
         }
         List<OrderDetail> details = detailRepo.findByOrderId(id);
+        double total = details.stream().mapToDouble(d -> d.getPrice() * d.getQuantity()).sum();
         model.addAttribute("order", order);
         model.addAttribute("details", details);
+        model.addAttribute("total", total);
         return "order-detail";
     }
 }

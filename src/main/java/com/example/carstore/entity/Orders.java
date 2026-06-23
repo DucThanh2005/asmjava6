@@ -6,14 +6,23 @@ import java.util.Date;
 @Entity
 @Table(name = "orders")
 public class Orders {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String username;
-    Date create_date;
-    String address;
-    String status;
 
-    public Orders() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String username;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date create_date;
+
+    private String address;
+
+    private String status;
+
+    public Orders() {
+    }
 
     public Orders(Integer id, String username, Date create_date, String address, String status) {
         this.id = id;

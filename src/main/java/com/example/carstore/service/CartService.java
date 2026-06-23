@@ -1,6 +1,7 @@
 package com.example.carstore.service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -13,20 +14,28 @@ public class CartService {
 
     public Map<Integer, CartItem> getCart(HttpSession session) {
         @SuppressWarnings("unchecked")
-		Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+        Map<Integer, CartItem> cart =
+                (Map<Integer, CartItem>) session.getAttribute("cart");
+
         if (cart == null) {
             cart = new HashMap<>();
             session.setAttribute("cart", cart);
         }
+
         return cart;
     }
 
     public void add(CartItem item, HttpSession session) {
         Map<Integer, CartItem> cart = getCart(session);
-        if (cart.containsKey(item.getId())) {
-            cart.get(item.getId()).setQuantity(cart.get(item.getId()).getQuantity() + 1);
-        } else {
+
+        if (item.getQuantity() <= 0) {
             item.setQuantity(1);
+        }
+
+        if (cart.containsKey(item.getId())) {
+            CartItem old = cart.get(item.getId());
+            old.setQuantity(old.getQuantity() + item.getQuantity());
+        } else {
             cart.put(item.getId(), item);
         }
     }
@@ -35,10 +44,21 @@ public class CartService {
         getCart(session).remove(id);
     }
 
+    public void clear(HttpSession session) {
+        session.removeAttribute("cart");
+    }
+
     public double getTotal(HttpSession session) {
         return getCart(session).values()
                 .stream()
-                .mapToDouble(i -> i.getPrice() * i.getQuantity())
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+    }
+
+    public int getTotalQuantity(HttpSession session) {
+        return getCart(session).values()
+                .stream()
+                .mapToInt(CartItem::getQuantity)
                 .sum();
     }
 }
