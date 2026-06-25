@@ -5,9 +5,12 @@
 .ford-video-hero {
   width: 100%;
   height: auto;
-  border-radius: 20px; /* Bo góc giống thiết kế hiện tại */
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15); /* Tạo bóng đổ cho sang trọng */
-  object-fit: cover; /* Đảm bảo video lấp đầy khung hình */
+  border-radius: 20px;
+  /* Bo góc giống thiết kế hiện tại */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  /* Tạo bóng đổ cho sang trọng */
+  object-fit: cover;
+  /* Đảm bảo video lấp đầy khung hình */
 }
 
 /* Hiệu ứng mờ dần khi tải trang */
@@ -16,8 +19,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -38,6 +48,7 @@ body a {
   color: inherit;
   text-decoration: none;
 }
+
 body a:hover {
   color: #1351b4;
 }
@@ -104,6 +115,7 @@ body a:hover {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .ford-icon-btn:hover {
   background: rgba(0, 0, 0, 0.06);
 }
@@ -123,6 +135,7 @@ body a:hover {
   padding: 0 24px 12px;
   display: none;
 }
+
 .ford-search-row.is-open {
   display: block;
 }
@@ -145,6 +158,7 @@ body a:hover {
   background: #fff;
   color: #111;
 }
+
 .ford-search-form input[type='search']:focus {
   outline: none;
   border-color: #1351b4;
@@ -163,6 +177,7 @@ body a:hover {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .ford-search-form button[type='submit']:hover {
   background: #0e3f8a;
 }
@@ -187,13 +202,16 @@ body a:hover {
   transition: opacity 0.6s ease;
   pointer-events: none;
 }
+
 .ford-hero-slide::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.07); /* Giảm overlay cho ảnh rõ hơn */
+  background: rgba(0, 0, 0, 0.07);
+  /* Giảm overlay cho ảnh rõ hơn */
   z-index: 1;
 }
+
 .ford-hero-copy {
   position: absolute;
   left: 48px;
@@ -201,18 +219,21 @@ body a:hover {
   z-index: 2;
   max-width: 520px;
   color: #fff;
-  text-shadow: 0 2px 10px rgba(0,0,0,.4);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .4);
 }
+
 .ford-hero-slide.is-active {
   opacity: 1;
   pointer-events: auto;
-  filter: none; /* Đảm bảo không bị mờ */
+  filter: none;
+  /* Đảm bảo không bị mờ */
 }
 
 .ford-hero-slide.is-active {
   opacity: 1;
   pointer-events: auto;
 }
+
 .ford-hero-slide.is-active {
   opacity: 1;
   pointer-events: auto;
@@ -222,12 +243,10 @@ body a:hover {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.75) 0%,
-    rgba(0, 0, 0, 0.2) 45%,
-    rgba(0, 0, 0, 0.15) 100%
-  );
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.2) 45%,
+      rgba(0, 0, 0, 0.15) 100%);
 }
 
 .ford-hero-copy {
@@ -268,6 +287,7 @@ body a:hover {
   cursor: pointer;
   transition: background 0.2s, transform 0.15s;
 }
+
 .ford-cta:hover {
   background: #0e3f8a;
   color: #fff !important;
@@ -300,6 +320,7 @@ body a:hover {
   backdrop-filter: blur(6px);
   transition: background 0.2s;
 }
+
 .ford-carousel-btn:hover {
   background: rgba(0, 0, 0, 0.65);
 }
@@ -342,6 +363,7 @@ body a:hover {
   height: 100%;
   transition: box-shadow 0.2s, transform 0.2s;
 }
+
 .ford-car-card:hover {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
@@ -352,6 +374,7 @@ body a:hover {
   overflow: hidden;
   background: #f3f4f6;
 }
+
 .ford-car-img img {
   width: 100%;
   height: 100%;
@@ -388,6 +411,7 @@ body.page-home .ford-btn-outline {
   font-size: 0.875rem;
   font-weight: 600;
 }
+
 body.page-home .ford-btn-outline:hover {
   border-color: #1351b4;
   color: #1351b4;
@@ -404,9 +428,30 @@ body.page-home .ford-btn-primary-sm {
   font-size: 0.875rem;
   font-weight: 600;
 }
+
 body.page-home .ford-btn-primary-sm:hover {
   background: #0e3f8a;
   color: #fff;
+}
+
+body.page-home .ford-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #1351b4;
+  background: #1351b4;
+  color: #fff !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+body.page-home .ford-btn-primary:hover {
+  background: #0e3f8a;
+  border-color: #0e3f8a;
+  color: #fff !important;
 }
 
 @media (max-width: 991px) {
@@ -416,23 +461,28 @@ body.page-home .ford-btn-primary-sm:hover {
     padding: 12px 16px;
     gap: 12px;
   }
+
   .ford-nav-left {
     justify-self: center;
     flex-wrap: wrap;
     justify-content: center;
     gap: 16px;
   }
+
   .ford-logo {
     order: -1;
   }
+
   .ford-nav-right {
     justify-self: center;
   }
+
   .ford-hero-copy {
     left: 24px;
     right: 24px;
     bottom: 88px;
   }
+
   .ford-hero-arrows {
     right: 16px;
     bottom: 24px;
@@ -470,7 +520,8 @@ body.page-home .ford-btn-primary-sm:hover {
   background: #f9fafb;
 }
 
-.table.cs-table td, .table.cs-table th {
+.table.cs-table td,
+.table.cs-table th {
   border-color: #e5e7eb !important;
 }
 
@@ -478,13 +529,15 @@ body.page-home .ford-btn-primary-sm:hover {
   background: #f3f4f6;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
   background: #fff;
   color: #111827;
   border-color: #d1d5db;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
   border-color: #1351b4;
   box-shadow: 0 0 0 .25rem rgba(19, 81, 180, .18);
   background: #fff;
@@ -559,6 +612,7 @@ a:hover {
   background: linear-gradient(135deg, #f3f4f6 0%, #e6f2ff 100%);
   padding: 60px 24px;
 }
+
 .ford-intro-grid {
   max-width: 1280px;
   margin: 0 auto;
@@ -567,6 +621,7 @@ a:hover {
   gap: 24px;
   align-items: center;
 }
+
 .ford-intro .ford-badge {
   display: inline-block;
   background: #eff6ff;
@@ -577,21 +632,25 @@ a:hover {
   margin-bottom: 12px;
   font-size: 0.875rem;
 }
+
 .ford-intro h1 {
   font-size: clamp(2rem, 4vw, 3rem);
   margin: 0;
   font-weight: 800;
   line-height: 1.1;
 }
+
 .ford-intro p {
   color: #334155;
   margin: 18px 0 24px;
   font-size: 1.1rem;
 }
+
 .ford-intro-actions {
   display: flex;
   gap: 12px;
 }
+
 .ford-intro-image img {
   width: 100%;
   border-radius: 16px;
@@ -607,10 +666,12 @@ a:hover {
   border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
 }
+
 .ford-models-meta {
   color: #64748b;
   margin-top: 4px;
 }
+
 .ford-model-nav {
   display: flex;
   flex-direction: column;
@@ -620,6 +681,7 @@ a:hover {
   padding: 16px;
   border-radius: 12px;
 }
+
 .ford-model-nav a {
   color: #0f172a;
   font-weight: 600;
@@ -628,22 +690,26 @@ a:hover {
   border-radius: 14px;
   transition: all 0.2s;
 }
+
 .ford-model-nav a.active,
 .ford-model-nav a:hover {
   color: #0f4eb0;
   border-left-color: #0f4eb0;
   background: #eff6ff;
 }
+
 .ford-inventory-grid {
   display: grid;
   grid-template-columns: minmax(220px, 280px) 1fr;
   gap: 24px;
 }
+
 .ford-filter-panel {
   position: sticky;
   top: 96px;
   align-self: start;
 }
+
 .ford-page-tabs {
   display: flex;
   gap: 20px;
@@ -651,15 +717,18 @@ a:hover {
   padding-bottom: 12px;
   margin-bottom: 24px;
 }
+
 .ford-page-tabs a {
   color: #475569;
   font-weight: 700;
   padding: 12px 0;
   position: relative;
 }
+
 .ford-page-tabs a.active {
   color: #0f4eb0;
 }
+
 .ford-page-tabs a.active::after {
   content: '';
   position: absolute;
@@ -670,6 +739,7 @@ a:hover {
   border-radius: 99px;
   background: #0f4eb0;
 }
+
 .ford-inventory-hero {
   display: flex;
   justify-content: space-between;
@@ -681,17 +751,20 @@ a:hover {
   border: 1px solid #e5e7eb;
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
 }
+
 .ford-inventory-hero h2 {
   margin: 0;
   font-size: clamp(1.8rem, 2.4vw, 2.2rem);
   line-height: 1.05;
   color: #0f172a;
 }
+
 .ford-hero-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
+
 .ford-hero-actions a {
   padding: 10px 18px;
   border-radius: 999px;
@@ -701,10 +774,12 @@ a:hover {
   font-weight: 700;
   transition: background 0.2s, transform 0.2s;
 }
+
 .ford-hero-actions a:hover {
   background: #eff6ff;
   transform: translateY(-1px);
 }
+
 .ford-vehicle-card {
   border-radius: 24px;
   overflow: hidden;
@@ -716,10 +791,12 @@ a:hover {
   display: flex;
   flex-direction: column;
 }
+
 .ford-vehicle-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12);
 }
+
 .ford-vehicle-card-media {
   background: #f8fafc;
   display: grid;
@@ -727,12 +804,14 @@ a:hover {
   min-height: 260px;
   padding: 20px;
 }
+
 .ford-vehicle-card-media img {
   width: auto;
   max-width: 100%;
   max-height: 240px;
   object-fit: contain;
 }
+
 .ford-vehicle-card-body {
   padding: 24px;
   display: flex;
@@ -740,16 +819,19 @@ a:hover {
   gap: 12px;
   flex: 1;
 }
+
 .ford-vehicle-card-body h3 {
   margin: 0;
   font-size: 1.1rem;
   color: #111827;
 }
+
 .ford-vehicle-card-body p {
   margin: 0;
   color: #475569;
   line-height: 1.6;
 }
+
 .ford-link-action {
   font-weight: 700;
   color: #0f4eb0;
@@ -757,55 +839,67 @@ a:hover {
   align-items: center;
   gap: 6px;
 }
+
 .ford-link-action::after {
   content: '→';
 }
+
 .ford-category-section {
   padding: 24px 0 0;
 }
-.ford-category-section + .ford-category-section {
+
+.ford-category-section+.ford-category-section {
   border-top: 1px solid #e5e7eb;
   padding-top: 32px;
 }
+
 .ford-category-subtitle {
   margin: 0.4rem 0 0;
   color: #64748b;
   max-width: 680px;
   line-height: 1.6;
 }
+
 @media (max-width: 768px) {
   .ford-category-section {
     padding-top: 20px;
   }
 }
+
 @media (max-width: 992px) {
   .ford-inventory-grid {
     grid-template-columns: 1fr;
   }
+
   .ford-filter-panel {
     position: static;
   }
 }
+
 .ford-model-card img {
   width: 330px;
   height: 240px;
   object-fit: cover;
 }
+
 .ford-model-copy {
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .ford-model-copy h3 {
   margin: 0;
   font-size: 1.65rem;
 }
+
 .ford-model-copy strong {
   color: #0f4eb0;
   font-size: 1.25rem;
   margin-top: 4px;
 }
+
 .ford-model-actions {
   display: flex;
   gap: 10px;
@@ -817,6 +911,7 @@ a:hover {
   border-top: 1px solid #e5e7eb;
   padding: 36px 24px;
 }
+
 .ford-footer-grid {
   max-width: 1280px;
   margin: 0 auto;
@@ -824,11 +919,13 @@ a:hover {
   grid-template-columns: repeat(4, minmax(180px, 1fr));
   gap: 24px;
 }
+
 .ford-footer h4 {
   margin-bottom: 10px;
   font-size: 1rem;
   font-weight: 700;
 }
+
 .ford-footer ul {
   list-style: none;
   margin: 0;
@@ -836,10 +933,12 @@ a:hover {
   display: grid;
   gap: 8px;
 }
+
 .ford-footer a {
   color: #334155;
   font-size: 0.92rem;
 }
+
 .ford-footer a:hover {
   color: #0f4eb0;
 }
@@ -847,11 +946,13 @@ a:hover {
 .ford-showcase {
   padding: 0 24px 64px;
 }
+
 .ford-section-subtitle {
   color: #64748b;
   max-width: 640px;
   margin-top: 0.5rem;
 }
+
 .ford-feature-card {
   display: grid;
   grid-template-columns: 1fr;
@@ -861,19 +962,23 @@ a:hover {
   overflow: hidden;
   box-shadow: 0 28px 80px rgba(15, 23, 42, 0.18);
 }
+
 .ford-feature-card-img {
   min-height: 280px;
   overflow: hidden;
 }
+
 .ford-feature-card-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
+
 .ford-feature-card:hover .ford-feature-card-img img {
   transform: scale(1.03);
 }
+
 .ford-feature-card-body {
   padding: 36px;
   display: flex;
@@ -882,19 +987,23 @@ a:hover {
   gap: 1rem;
   color: #f8fafc;
 }
+
 .ford-feature-card-body h3 {
   margin: 0;
   font-size: clamp(2rem, 2.5vw, 2.3rem);
   line-height: 1.05;
 }
+
 .ford-feature-card-body p {
   max-width: 560px;
   color: #cbd5e1;
 }
+
 .ford-grid-small {
   display: grid;
   gap: 20px;
 }
+
 .ford-small-card {
   min-height: 200px;
   border-radius: 22px;
@@ -906,28 +1015,35 @@ a:hover {
   color: #fff;
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
 }
+
 .ford-small-card h4 {
   margin: 0 0 0.75rem;
   font-size: 1.2rem;
 }
+
 .ford-small-card p {
   margin: 0;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
+
 .ford-link-muted {
   font-size: 0.95rem;
   color: #e2e8f0;
   font-weight: 600;
 }
+
 .ford-link-muted:hover {
   color: #fff;
 }
+
 .bg-sky {
   background: linear-gradient(135deg, #2563eb, #22d3ee);
 }
+
 .bg-rose {
   background: linear-gradient(135deg, #db2777, #f472b6);
 }
+
 .ford-product-card {
   border-radius: 22px;
   overflow: hidden;
@@ -937,25 +1053,31 @@ a:hover {
   display: grid;
   gap: 16px;
 }
+
 .ford-product-card img {
   width: 100%;
   height: 190px;
   object-fit: cover;
 }
+
 .ford-product-card div {
   padding: 1.25rem;
 }
+
 .ford-product-card h5 {
   margin: 0.75rem 0 0.5rem;
   font-size: 1.05rem;
 }
+
 .ford-product-card p {
   margin: 0;
   color: #6b7280;
 }
+
 .ford-product-card-alt {
   background: #f8fafc;
 }
+
 .ford-showcase-banner {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -965,6 +1087,7 @@ a:hover {
   overflow: hidden;
   min-height: 320px;
 }
+
 .ford-showcase-banner-body {
   padding: 42px;
   display: flex;
@@ -972,22 +1095,26 @@ a:hover {
   justify-content: center;
   gap: 1rem;
 }
+
 .ford-showcase-banner-body h3 {
   margin: 0;
   font-size: clamp(2rem, 2.4vw, 2.4rem);
   line-height: 1.05;
   color: #f8fafc;
 }
+
 .ford-showcase-banner-body p {
   margin: 0;
   max-width: 560px;
   color: #cbd5e1;
 }
+
 .ford-showcase-banner-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .ford-info-card {
   border-radius: 22px;
   padding: 28px;
@@ -995,33 +1122,40 @@ a:hover {
   background: #fff;
   box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
 }
+
 .ford-info-card h4 {
   margin: 0 0 0.75rem;
   font-size: 1.15rem;
   color: #111827;
 }
+
 .ford-info-card p {
   margin: 0;
   color: #475569;
   line-height: 1.75;
 }
+
 .ford-info-card-pale {
   background: #f8fafc;
 }
+
 .ford-footer {
   background: #f8fafc;
   border-top: 1px solid #e5e7eb;
   padding: 48px 24px 32px;
 }
+
 .ford-footer-inner {
   max-width: 1280px;
   margin: 0 auto;
 }
+
 .ford-footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 32px;
 }
+
 .ford-footer-col h3 {
   margin-bottom: 1rem;
   font-size: 0.95rem;
@@ -1029,15 +1163,18 @@ a:hover {
   letter-spacing: 0.04em;
   color: #111827;
 }
+
 .ford-footer-col a {
   display: block;
   margin-bottom: 0.75rem;
   color: #334155;
   font-size: 0.95rem;
 }
+
 .ford-footer-col a:hover {
   color: #0f4eb0;
 }
+
 .ford-footer-bottom {
   margin-top: 40px;
   display: flex;
@@ -1047,15 +1184,18 @@ a:hover {
   border-top: 1px solid #e5e7eb;
   padding-top: 24px;
 }
+
 .ford-footer-bottom p {
   margin: 0;
   color: #6b7280;
 }
+
 .ford-footer-socials {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
+
 .ford-footer-socials a {
   width: 40px;
   height: 40px;
@@ -1069,32 +1209,83 @@ a:hover {
   font-weight: 700;
   transition: transform 0.2s, background 0.2s;
 }
+
 .ford-footer-socials a:hover {
   background: #e5e7eb;
   transform: translateY(-1px);
 }
+
 @media (max-width: 992px) {
   .ford-footer-grid {
     grid-template-columns: 1fr;
   }
+
   .ford-feature-card {
     grid-template-columns: 1fr;
   }
+
   .ford-feature-card-img {
     min-height: 220px;
   }
+
   .ford-footer-bottom {
     flex-direction: column;
     align-items: flex-start;
   }
 }
-  .ford-footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+
+.ford-footer-grid {
+  grid-template-columns: 1fr 1fr;
+}
 
 
 @media (max-width: 640px) {
   .ford-footer-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* =======================
+   Tiền không xuống dòng
+======================= */
+
+.money-cell {
+  white-space: nowrap;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cart-total-money {
+  display: block;
+  white-space: nowrap !important;
+  font-size: 24px;
+  font-weight: 800;
+  color: #dc3545;
+  line-height: 1.2;
+}
+
+.home-cart-alert {
+  position: fixed;
+  top: 84px;
+  right: 24px;
+  z-index: 3000;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: #16a34a;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .18);
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition: all .25s ease;
+}
+
+.home-cart-alert.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.home-cart-alert.error {
+  background: #dc2626;
 }

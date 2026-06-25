@@ -12,6 +12,8 @@
 
 <body class="page-home">
 
+    <div id="homeCartAlert" class="home-cart-alert">Thêm giỏ hàng thành công</div>
+
     <header class="ford-header">
         <div class="ford-header-inner">
             <nav class="ford-nav-left">
@@ -125,9 +127,14 @@
                             <small>VNĐ</small>
                         </div>
 
-                        <div class="d-grid gap-2 d-md-flex">
-                            <a class="ford-btn-primary w-100" th:href="@{'/car/detail/' + ${car.id}}">Chi tiết</a>
-                            <a class="ford-btn-outline w-100" th:href="@{'/cart/add/' + ${car.id}}">Thêm giỏ hàng</a>
+                        <div class="d-flex gap-2 mt-3">
+                            <a class="ford-btn-primary w-100" th:href="@{'/car/detail/' + ${car.id}}">
+                                Chi tiết
+                            </a>
+                            <button type="button" class="ford-btn-outline w-100 add-cart-btn"
+                                th:attr="data-id=${car.id}" onclick="addToCartHome(this)">
+                                Thêm giỏ hàng
+                            </button>
                         </div>
                         <div class="mt-2 text-center" sec:authorize="hasRole('ADMIN')">
                             <a th:href="@{'/car/edit/' + ${car.id}}" class="btn btn-sm btn-link text-secondary">Chỉnh
@@ -327,9 +334,10 @@
                 });
             }
 
-            // Carousel Tối ưu tốc độ (4 giây cho trải nghiệm sang trọng)
+            // Carousel
             var slides = document.querySelectorAll('.ford-hero-slide');
             var i = 0;
+
             function show(n) {
                 if (slides.length === 0) return;
                 i = (n + slides.length) % slides.length;
@@ -346,48 +354,63 @@
                 });
             }
         })();
+
+        // ==========================
+        // Thêm giỏ hàng không chuyển trang
+        // ==========================
+
+        function addToCartHome(btn) {
+
+            const id = btn.dataset.id;
+
+            fetch("/cart/add-api/" + id, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.success) {
+
+                        showHomeCartAlert("Thêm giỏ hàng thành công", false);
+
+                    } else {
+
+                        showHomeCartAlert(data.message || "Thêm giỏ hàng thất bại", true);
+
+                    }
+
+                })
+                .catch(() => {
+
+                    showHomeCartAlert("Không thể kết nối tới máy chủ.", true);
+
+                });
+
+        }
+
+        function showHomeCartAlert(message, isError = false) {
+
+            const alertBox = document.getElementById("homeCartAlert");
+
+            alertBox.innerText = message;
+
+            if (isError) {
+                alertBox.classList.add("error");
+            } else {
+                alertBox.classList.remove("error");
+            }
+
+            alertBox.classList.add("show");
+
+            setTimeout(function () {
+                alertBox.classList.remove("show");
+            }, 1500);
+
+        }
     </script>
-    <footer class="ford-footer mt-5">
-        <div class="ford-footer-inner container">
-            <div class="ford-footer-grid">
-                <div class="ford-footer-col">
-                    <h3>Sản phẩm</h3>
-                    <a href="/car/list">Xe SUV</a>
-                    <a href="/car/list">Xe Thương Mại</a>
-                </div>
-                <div class="ford-footer-col">
-                    <h3>Mua Xe</h3>
-                    <a href="/cart/view">Quản lý đặt cọc</a>
-                    <a href="/car/list">Kiểm tra xe có sẵn</a>
-                    <a href="/car/list">Lựa chọn mẫu xe và báo giá</a>
-                    <a href="/car/list">Bảng giá</a>
-                </div>
-                <div class="ford-footer-col">
-                    <h3>Dịch Vụ</h3>
-                    <a href="/service">Đặt lịch dịch vụ</a>
-                    <a href="/service">Báo giá dịch vụ</a>
-                    <a href="/service">Lịch bảo dưỡng định kỳ</a>
-                    <a href="/support">Nhận & giao xe tận nơi</a>
-                </div>
-                <div class="ford-footer-col">
-                    <h3>FORD VIỆT NAM</h3>
-                    <a href="/support">Lịch sử công ty</a>
-                    <a href="/support">Tin tức & Sự kiện</a>
-                    <a href="/support">Hỗ trợ cộng đồng</a>
-                </div>
-            </div>
-            <div class="ford-footer-bottom">
-                <p class="mb-0">Theo dõi Ford</p>
-                <div class="ford-footer-socials">
-                    <a href="#" aria-label="Facebook">F</a>
-                    <a href="#" aria-label="YouTube">Y</a>
-                    <a href="#" aria-label="Instagram">I</a>
-                    <a href="#" aria-label="Zalo">Z</a>
-                    <a href="#" aria-label="TikTok">T</a>
-                </div>
-            </div>
-        </div>
-    </footer>
 </body>
 
 </html>

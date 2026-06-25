@@ -8,9 +8,66 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/assets/app.css}">
     <link rel="stylesheet" th:href="@{/assets/ford-home.css}">
+    <style>
+        .cart-qty-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+            flex-wrap: nowrap;
+        }
+
+        .cart-qty-btn {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+            border-radius: 50%;
+            font-weight: 800;
+        }
+
+        .cart-qty-number {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .cart-alert {
+            position: fixed;
+            top: 90px;
+            right: 30px;
+            background: #198754;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: .3s;
+
+            z-index: 9999;
+        }
+
+        .cart-alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cart-alert.error {
+            background: #dc3545;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
+    <div id="cartAlert" class="cart-alert">Cập nhật giỏ hàng thành công</div>
 
     <header class="ford-header">
         <div class="ford-header-inner">
@@ -48,46 +105,55 @@
                 <div class="cs-badge mb-3">🛒 Shopping</div>
                 <h1 class="cs-page-title m-0">🛒 Giỏ hàng đặt cọc của bạn</h1>
             </div>
-            <a th:href="@{/order/checkout}" class="btn btn-success rounded-pill px-3 py-2" role="button" title="Thanh toán">Thanh toán</a>
+            <a th:href="@{/order/checkout}" class="btn btn-success rounded-pill px-3 py-2" role="button"
+                title="Thanh toán">Thanh toán</a>
         </div>
 
         <div class="row g-4">
 
             <div class="col-12 col-lg-8">
                 <div class="cs-card p-4 bg-white border rounded-4 shadow-sm">
-                    <div class="table-responsive">
-                        <table class="table align-middle mb-0">
+                    <div class="table-responsive overflow-auto">
+                        <table class="table align-middle mb-0 cart-table">
                             <thead>
                                 <tr>
                                     <th>Mẫu xe</th>
-                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-center">Đơn giá</th>
                                     <th class="text-center">Số lượng</th>
-                                    <th class="text-end">Tổng cộng</th>
+                                    <th class="text-center" style="width:180px;">Tổng cộng</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="c : ${cart}">
+                                <tr th:each="c : ${cart}" th:id="${'cart-row-' + c.id}">
                                     <td class="fw-bold text-uppercase" th:text="${c.name}"></td>
-                                    <td class="text-end"
+                                    <td class="text-center money-cell"
                                         th:text="${#numbers.formatDecimal(c.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
                                     </td>
 
                                     <td class="text-center">
-                                        <a class="btn btn-sm btn-light border py-0 px-2 text-decoration-none"
-                                            th:href="@{'/cart/decrement/' + ${c.id}}">-</a>
-                                        <span class="mx-2 fw-bold" th:text="${c.quantity}">1</span>
-                                        <a class="btn btn-sm btn-light border py-0 px-2 text-decoration-none"
-                                            th:href="@{'/cart/increment/' + ${c.id}}">+</a>
+                                        <div class="cart-qty-box">
+                                            <button type="button" class="btn btn-sm btn-light border cart-qty-btn"
+                                                th:attr="data-id=${c.id}"
+                                                onclick="changeCartQty(this, 'decrement')">-</button>
+                                            <span class="cart-qty-number" th:id="${'qty-' + c.id}"
+                                                th:text="${c.quantity}">1</span>
+                                            <button type="button" class="btn btn-sm btn-light border cart-qty-btn"
+                                                th:attr="data-id=${c.id}"
+                                                onclick="changeCartQty(this, 'increment')">+</button>
+                                        </div>
                                     </td>
 
-                                    <td class="text-end text-primary fw-bold"
+                                    <td class="text-center text-primary fw-bold money-cell"
+                                        th:id="${'line-total-' + c.id}" th:attr="data-price=${c.price}"
                                         th:text="${#numbers.formatDecimal(c.price * c.quantity, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
                                     </td>
 
-                                    <td class="text-end">
-                                        <a class="btn btn-danger btn-sm rounded-pill px-3 text-decoration-none"
-                                            th:href="@{'/cart/remove/' + ${c.id}}">Xóa</a>
+                                    <td class="text-center" style="width:90px;">
+                                        <a class="btn btn-danger btn-sm rounded-pill px-3"
+                                            th:href="@{'/cart/remove/' + ${c.id}}">
+                                            Xóa
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -104,7 +170,7 @@
                 <div class="cs-card p-4 bg-white border rounded-4 shadow-sm">
                     <h4 class="fw-bold border-bottom pb-2">Thông tin nhận xe</h4>
 
-                    <form th:action="@{/order/checkout}" method="post">
+                    <form th:action="@{/order/checkout}" method="get">
                         <div class="mb-3">
                             <label class="form-label small text-muted fw-bold">Địa chỉ thường trú (đăng ký biển
                                 số)</label>
@@ -114,7 +180,7 @@
                         <hr class="my-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted fw-semibold">Tổng thanh toán:</span>
-                            <span class="h4 text-danger fw-bold m-0"
+                            <span id="cart-total" class="h4 text-danger fw-bold m-0"
                                 th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
                         </div>
                         <button type="submit" class="btn btn-success w-100 py-2 rounded-pill fw-bold">Gửi yêu cầu đặt xe
@@ -126,6 +192,70 @@
 
         </div>
     </div>
+
+    <script>
+        function formatVnd(value) {
+            return Number(value || 0).toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        function showCartAlert(message, isError) {
+            const alertBox = document.getElementById('cartAlert');
+            if (!alertBox) return;
+            alertBox.textContent = message;
+            alertBox.classList.toggle('error', !!isError);
+            alertBox.classList.add('show');
+            setTimeout(() => alertBox.classList.remove('show'), 1400);
+        }
+
+        async function changeCartQty(button, action) {
+            const id = button.getAttribute('data-id');
+            if (!id) return;
+            button.disabled = true;
+
+            try {
+                const response = await fetch('/cart/' + action + '-api/' + id, {
+                    method: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+
+                if (!data.success) {
+                    showCartAlert(data.message || 'Không thể cập nhật giỏ hàng', true);
+                    return;
+                }
+
+                const items = Array.isArray(data.items) ? data.items : [];
+                const item = items.find(i => Number(i.id) === Number(id));
+                const row = document.getElementById('cart-row-' + id);
+
+                if (!item) {
+                    if (row) row.remove();
+                } else {
+                    const qtyEl = document.getElementById('qty-' + id);
+                    const lineTotalEl = document.getElementById('line-total-' + id);
+                    if (qtyEl) qtyEl.textContent = item.quantity;
+                    if (lineTotalEl) {
+                        const price = Number(lineTotalEl.getAttribute('data-price') || item.price || 0);
+                        lineTotalEl.textContent = formatVnd(price * Number(item.quantity || 0));
+                    }
+                }
+
+                const totalEl = document.getElementById('cart-total');
+                if (totalEl) totalEl.textContent = formatVnd(data.total);
+
+                showCartAlert('Cập nhật giỏ hàng thành công', false);
+
+                if (items.length === 0) {
+                    setTimeout(() => window.location.reload(), 500);
+                }
+            } catch (error) {
+                showCartAlert('Lỗi kết nối, vui lòng thử lại', true);
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+    </script>
     <footer class="ford-footer mt-5">
         <div class="ford-footer-inner container">
             <div class="ford-footer-grid">

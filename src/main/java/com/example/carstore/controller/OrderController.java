@@ -39,9 +39,19 @@ public class OrderController {
     OrderDetailRepository detailRepo;
 
     @GetMapping("/checkout")
-    public String checkout(Model model, HttpSession session) {
+    public String checkout(@RequestParam(required = false) String address,
+            Model model,
+            HttpSession session) {
+
+        if (cartService.getCart(session).isEmpty()) {
+            model.addAttribute("error", "Không có sản phẩm nào để thanh toán!");
+            return "cart";
+        }
+
         model.addAttribute("cart", cartService.getCart(session).values());
         model.addAttribute("total", cartService.getTotal(session));
+        model.addAttribute("address", address == null ? "" : address);
+
         return "checkout";
     }
 
@@ -61,7 +71,15 @@ public class OrderController {
         }
 
         if (cartItems.isEmpty()) {
-            model.addAttribute("error", "Giỏ hàng trống!");
+
+            model.addAttribute("error", "Không có sản phẩm để thanh toán.");
+
+            model.addAttribute("cart", cartService.getCart(session).values());
+
+            model.addAttribute("total", 0);
+
+            model.addAttribute("address", address);
+
             return "checkout";
         }
 
@@ -85,7 +103,7 @@ public class OrderController {
         // Clear cart
         session.removeAttribute("cart");
 
-        return "redirect:/order/my-orders";
+        return "redirect:/order/detail/" + order.getId();
     }
 
     @GetMapping("/my-orders")
@@ -106,7 +124,12 @@ public class OrderController {
         }
         String username = auth.getName();
         Orders order = orderRepo.findById(id).orElse(null);
-        if (order == null || !order.getUsername().equals(username)) {
+
+        if (order == null) {
+            return "redirect:/order/my-orders";
+        }
+
+        if (!order.getUsername().equals(username)) {
             return "redirect:/order/my-orders";
         }
         List<OrderDetail> details = detailRepo.findByOrderId(id);

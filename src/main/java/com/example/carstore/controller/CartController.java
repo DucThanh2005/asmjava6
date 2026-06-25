@@ -48,6 +48,30 @@ public class CartController {
         return "redirect:/cart/view";
     }
 
+    @GetMapping("/increment/{id}")
+    public String increment(@PathVariable Integer id, HttpSession session) {
+        Car car = carService.findById(id);
+        if (car != null) {
+            CartItem item = new CartItem(car.getId(), car.getName(), car.getPrice(), 1);
+            cartService.add(item, session);
+        }
+        return "redirect:/cart/view";
+    }
+
+    @GetMapping("/decrement/{id}")
+    public String decrement(@PathVariable Integer id, HttpSession session) {
+        Map<Integer, CartItem> cart = cartService.getCart(session);
+        if (cart != null && cart.containsKey(id)) {
+            CartItem item = cart.get(id);
+            if (item.getQuantity() > 1) {
+                item.setQuantity(item.getQuantity() - 1);
+            } else {
+                cartService.remove(id, session);
+            }
+        }
+        return "redirect:/cart/view";
+    }
+
     // =========================================================================
     // API CHUẨN ĐỒNG BỘ ĐA NĂNG CHO VUEJS (TRẢ VỀ JSON CHÍNH XÁC)
     // =========================================================================

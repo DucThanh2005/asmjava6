@@ -37,6 +37,8 @@
         <div class="cs-hero mb-4">
             <div class="cs-badge mb-2">📋 Verification</div>
             <h1 class="cs-page-title">Xác nhận yêu cầu đặt xe</h1>
+            <div th:if="${error}" class="alert alert-danger mt-3 fw-bold" th:text="${error}">
+            </div>
         </div>
 
         <form th:action="@{/order/place}" method="post">
@@ -60,7 +62,8 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold small">Địa chỉ thường trú (Ghi trên đăng ký xe)</label>
                             <textarea class="form-control" name="address" rows="2"
-                                placeholder="Số nhà, tên đường, tỉnh/thành phố..." required></textarea>
+                                placeholder="Số nhà, tên đường, tỉnh/thành phố..." required
+                                th:text="${address}"></textarea>
                         </div>
 
                         <div class="mb-3">

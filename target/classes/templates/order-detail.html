@@ -62,10 +62,11 @@
                                             Name</span>
                                     </td>
                                     <td class="text-end"
-                                        th:text="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'VNĐ')}"></td>
+                                        th:text="${#numbers.formatDecimal(detail.price,0,'COMMA',0,'POINT')} + ' VNĐ'">
+                                    </td>
                                     <td class="text-center" th:text="${detail.quantity}"></td>
                                     <td class="text-end"
-                                        th:text="${#numbers.formatDecimal(detail.price * detail.quantity, 0, 'COMMA', 0, 'VNĐ')}">
+                                        th:text="${#numbers.formatDecimal(detail.price*detail.quantity,0,'COMMA',0,'POINT')} + ' VNĐ'">
                                     </td>
                                 </tr>
                             </tbody>
@@ -87,7 +88,7 @@
                     <div class="mb-3">
                         <span class="cs-muted">Tổng tiền:</span>
                         <div class="h5 fw-bold text-primary">
-                            <span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'VNĐ')}"></span>
+                            <span th:text="${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} + ' VNĐ'"></span>
                         </div>
                     </div>
                     <a href="/order/my-orders" class="btn cs-btn cs-btn-ghost w-100">Quay lại danh sách</a>
