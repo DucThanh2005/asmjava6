@@ -1,22 +1,24 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.carstore.repository.OrderDetailRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import com.example.carstore.repository.OrderDetailRepository;
 
 @Controller
 public class StatisticController {
 
-    @Autowired
-    OrderDetailRepository orderDetailRepo;
+    private final OrderDetailRepository orderDetailRepository;
+
+    public StatisticController(OrderDetailRepository orderDetailRepository) {
+        this.orderDetailRepository = orderDetailRepository;
+    }
 
     @GetMapping("/admin/statistics")
-    public String viewStats(Model model) {
-        Double revenue = orderDetailRepo.getRevenue();
-        model.addAttribute("totalRevenue", revenue != null ? revenue : 0);
-        model.addAttribute("topCars", orderDetailRepo.topCars());
-        return "admin/statistics"; // Khớp với tên file ở bước 4
+    public String statistics(Model model) {
+        Double totalRevenue = orderDetailRepository.getRevenue();
+        model.addAttribute("totalRevenue", totalRevenue == null ? 0 : totalRevenue);
+        model.addAttribute("topCars", orderDetailRepository.topCars());
+        return "statistics";
     }
 }

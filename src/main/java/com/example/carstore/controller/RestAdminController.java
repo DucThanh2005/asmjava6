@@ -1,6 +1,5 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +12,7 @@ import com.example.carstore.repository.BrandRepository;
 import com.example.carstore.repository.CarRepository;
 import com.example.carstore.repository.OrderDetailRepository;
 import com.example.carstore.repository.OrderRepository;
+import com.example.carstore.service.OrderService;
 
 import java.util.List;
 import java.util.Map;
@@ -22,23 +22,29 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class RestAdminController {
 
-    @Autowired
-    AccountRepository accountRepo;
+    private final AccountRepository accountRepo;
+    private final OrderRepository orderRepo;
+    private final OrderDetailRepository detailRepo;
+    private final CarRepository carRepo;
+    private final BrandRepository brandRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final OrderService orderService;
 
-    @Autowired
-    OrderRepository orderRepo;
-
-    @Autowired
-    OrderDetailRepository detailRepo;
-
-    @Autowired
-    CarRepository carRepo;
-
-    @Autowired
-    BrandRepository brandRepo;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public RestAdminController(AccountRepository accountRepo,
+                               OrderRepository orderRepo,
+                               OrderDetailRepository detailRepo,
+                               CarRepository carRepo,
+                               BrandRepository brandRepo,
+                               PasswordEncoder passwordEncoder,
+                               OrderService orderService) {
+        this.accountRepo = accountRepo;
+        this.orderRepo = orderRepo;
+        this.detailRepo = detailRepo;
+        this.carRepo = carRepo;
+        this.brandRepo = brandRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.orderService = orderService;
+    }
 
     // ===== USERS MANAGEMENT =====
 
@@ -123,6 +129,12 @@ public class RestAdminController {
                 return Map.of("success", false, "message", "User not found");
             }
 
+            if (orderRepo.existsByUsername(username)) {
+                return Map.of(
+                        "success", false,
+                        "message", "Cannot delete this user because the user already has orders. Keep the user to preserve order history.");
+            }
+
             accountRepo.deleteById(username);
 
             return Map.of("success", true, "message", "User deleted successfully");
@@ -172,7 +184,7 @@ public class RestAdminController {
                 return Map.of("success", false, "message", "Order not found");
             }
 
-            orderRepo.deleteById(id);
+            orderService.deleteOrder(id);
 
             return Map.of("success", true, "message", "Order deleted successfully");
         } catch (Exception e) {
@@ -259,6 +271,12 @@ public class RestAdminController {
                 return Map.of("success", false, "message", "Car not found");
             }
 
+            if (detailRepo.existsByCar_Id(id)) {
+                return Map.of(
+                        "success", false,
+                        "message", "Cannot delete this car because it already appears in order details. Keep it to preserve order history.");
+            }
+
             carRepo.deleteById(id);
 
             return Map.of("success", true, "message", "Car deleted successfully");
@@ -320,6 +338,12 @@ public class RestAdminController {
         try {
             if (!brandRepo.existsById(id)) {
                 return Map.of("success", false, "message", "Brand not found");
+            }
+
+            if (carRepo.countByBrandId(id) > 0) {
+                return Map.of(
+                        "success", false,
+                        "message", "Cannot delete this brand because it is being used by cars. Delete or move those cars first.");
             }
 
             brandRepo.deleteById(id);

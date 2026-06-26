@@ -9,6 +9,8 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
 
     List<OrderDetail> findByOrderId(Integer orderId);
 
+    boolean existsByCar_Id(Integer carId);
+
     // Tính tổng doanh thu
     @Query("SELECT SUM(d.price * d.quantity) FROM OrderDetail d")
     Double getRevenue();

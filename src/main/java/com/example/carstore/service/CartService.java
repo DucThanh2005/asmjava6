@@ -44,6 +44,19 @@ public class CartService {
         getCart(session).remove(id);
     }
 
+    public void decrease(Integer id, HttpSession session) {
+        Map<Integer, CartItem> cart = getCart(session);
+        CartItem item = cart.get(id);
+        if (item == null) {
+            return;
+        }
+        if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+        } else {
+            cart.remove(id);
+        }
+    }
+
     public void clear(HttpSession session) {
         session.removeAttribute("cart");
     }

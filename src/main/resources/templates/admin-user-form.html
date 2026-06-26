@@ -38,6 +38,9 @@
             <h1 class="cs-page-title mb-0">Thêm / Sửa user</h1>
         </div>
 
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
         <div class="cs-card p-3 p-md-4">
             <form th:action="@{/admin/users/save}" th:object="${account}" method="post" class="row g-3">
                 <div class="col-12">
@@ -46,7 +49,7 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label cs-muted">Password</label>
-                    <input class="form-control" type="password" th:field="*{password}" required />
+                    <input class="form-control" type="password" th:field="*{password}" placeholder="Để trống nếu không đổi mật khẩu" />
                 </div>
                 <div class="col-12">
                     <label class="form-label cs-muted">Fullname</label>

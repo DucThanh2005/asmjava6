@@ -38,6 +38,9 @@
             <h1 class="cs-page-title mb-0">Quản lý khách hàng</h1>
         </div>
 
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
         <div class="cs-card p-3 p-md-4">
             <div class="table-responsive">
                 <table class="table cs-table align-middle mb-0">

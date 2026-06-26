@@ -1,151 +1,99 @@
 package com.example.carstore.controller;
 
-import org.springframework.web.bind.annotation.*;
+import com.example.carstore.entity.Car;
+import com.example.carstore.repository.CarRepository;
+import com.example.carstore.util.ResponseUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.example.carstore.repository.CarRepository;
-import com.example.carstore.entity.Car;
 
 @RestController
 @RequestMapping("/api/cars")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class RestCarController {
 
-    @Autowired
-    CarRepository repo;
+    private final CarRepository carRepo;
 
-    // GET all cars
+    public RestCarController(CarRepository carRepo) {
+        this.carRepo = carRepo;
+    }
+
     @GetMapping
     public List<Car> getAll() {
-        return repo.findAll();
+        return carRepo.findAll();
     }
 
-    // GET car by ID
     @GetMapping("/{id}")
     public Map<String, Object> getCarById(@PathVariable Integer id) {
-        Car car = repo.findById(id).orElse(null);
-        if (car == null) {
-            return Map.of("success", false, "message", "Car not found");
-        }
-        return Map.of("success", true, "data", car);
+        return carRepo.findById(id)
+                .map(car -> Map.<String, Object>of("success", true, "data", car))
+                .orElse(ResponseUtils.fail("Car not found"));
     }
 
-    // SEARCH cars by name
     @GetMapping("/search")
-    public Map<String, Object> searchCars(
-            @RequestParam String keyword) {
-
-        try {
-
-            List<Car> cars = repo.findByNameContainingIgnoreCase(keyword);
-
-            return Map.of(
-                    "success", true,
-                    "data", cars,
-                    "count", cars.size());
-
-        } catch (Exception e) {
-
-            return Map.of(
-                    "success", false,
-                    "message", e.getMessage());
-        }
+    public Map<String, Object> searchCars(@RequestParam String keyword) {
+        List<Car> cars = carRepo.findByNameContainingIgnoreCase(keyword);
+        return Map.of("success", true, "data", cars, "count", cars.size());
     }
 
-    // CREATE car
     @PostMapping
     public Map<String, Object> create(@RequestBody Car car) {
-
-        try {
-
-            if (car.getName() == null || car.getName().trim().isEmpty()) {
-                return Map.of(
-                        "success", false,
-                        "message", "Car name is required");
-            }
-
-            if (car.getPrice() == null || car.getPrice() <= 0) {
-                return Map.of(
-                        "success", false,
-                        "message", "Invalid car price");
-            }
-
-            Car saved = repo.save(car);
-
-            return Map.of(
-                    "success", true,
-                    "message", "Car created successfully",
-                    "data", saved);
-
-        } catch (Exception e) {
-
-            return Map.of(
-                    "success", false,
-                    "message", "Error creating car: " + e.getMessage());
+        String validation = validateCar(car);
+        if (validation != null) {
+            return ResponseUtils.fail(validation);
         }
+        return ResponseUtils.ok("Car created successfully", "data", carRepo.save(car));
     }
 
-    // UPDATE car
     @PutMapping("/{id}")
     public Map<String, Object> update(@PathVariable Integer id, @RequestBody Car car) {
-        try {
-            Car existing = repo.findById(id).orElse(null);
-            if (existing == null) {
-                return Map.of("success", false, "message", "Car not found");
-            }
-
-            if (car.getName() != null) {
-                existing.setName(car.getName());
-            }
-            if (car.getPrice() != null) {
-                existing.setPrice(car.getPrice());
-            }
-            if (car.getImage() != null) {
-                existing.setImage(car.getImage());
-            }
-            if (car.getDescription() != null) {
-                existing.setDescription(car.getDescription());
-            }
-            if (car.getBrandId() != null) {
-                existing.setBrandId(car.getBrandId());
-            }
-            if (car.getYear() != null) {
-                existing.setYear(car.getYear());
-            }
-            if (car.getColor() != null) {
-                existing.setColor(car.getColor());
-            }
-
-            Car updated = repo.save(existing);
-            return Map.of("success", true, "message", "Car updated successfully", "data", updated);
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error updating car: " + e.getMessage());
-        }
+        return carRepo.findById(id).map(existing -> {
+            copyCarFields(car, existing);
+            return ResponseUtils.ok("Car updated successfully", "data", carRepo.save(existing));
+        }).orElse(ResponseUtils.fail("Car not found"));
     }
 
-    // DELETE car
     @DeleteMapping("/{id}")
     public Map<String, Object> delete(@PathVariable Integer id) {
-        try {
-            if (!repo.existsById(id)) {
-                return Map.of("success", false, "message", "Car not found");
-            }
-            repo.deleteById(id);
-            return Map.of("success", true, "message", "Car deleted successfully");
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error deleting car: " + e.getMessage());
+        if (!carRepo.existsById(id)) {
+            return ResponseUtils.fail("Car not found");
         }
+        carRepo.deleteById(id);
+        return ResponseUtils.ok("Car deleted successfully");
     }
 
-    // GET cars count
     @GetMapping("/stats/count")
     public Map<String, Object> getCarsCount() {
-        try {
-            long count = repo.count();
-            return Map.of("success", true, "count", count);
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error counting cars: " + e.getMessage());
+        return Map.of("success", true, "count", carRepo.count());
+    }
+
+    private String validateCar(Car car) {
+        if (car == null || car.getName() == null || car.getName().trim().isEmpty()) {
+            return "Car name is required";
         }
+        if (car.getPrice() == null || car.getPrice() <= 0) {
+            return "Invalid car price";
+        }
+        return null;
+    }
+
+    private void copyCarFields(Car source, Car target) {
+        if (source.getName() != null) target.setName(source.getName());
+        if (source.getPrice() != null) target.setPrice(source.getPrice());
+        if (source.getImage() != null) target.setImage(source.getImage());
+        if (source.getDescription() != null) target.setDescription(source.getDescription());
+        if (source.getBrandId() != null) target.setBrandId(source.getBrandId());
+        if (source.getYear() != null) target.setYear(source.getYear());
+        if (source.getColor() != null) target.setColor(source.getColor());
     }
 }

@@ -1,6 +1,9 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.carstore.entity.Account;
+import com.example.carstore.repository.AccountRepository;
+import com.example.carstore.repository.SupportRequestRepository;
+import com.example.carstore.util.SecurityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -9,32 +12,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.carstore.entity.Account;
-import com.example.carstore.repository.AccountRepository;
-import com.example.carstore.repository.SupportRequestRepository;
-
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
 
-    @Autowired
-    AccountRepository accountRepo;
+    private final AccountRepository accountRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final SupportRequestRepository supportRepo;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    SupportRequestRepository supportRepo;
+    public ProfileController(AccountRepository accountRepo,
+                             PasswordEncoder passwordEncoder,
+                             SupportRequestRepository supportRepo) {
+        this.accountRepo = accountRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.supportRepo = supportRepo;
+    }
 
     @GetMapping
     public String profile(Authentication auth, Model model) {
         if (auth == null) {
             return "redirect:/login";
         }
-        String username = auth.getName();
-        Account account = accountRepo.findById(username).orElse(null);
-        model.addAttribute("account", account);
-        model.addAttribute("list", supportRepo.findAll());
+        loadProfileModel(auth, model, null);
         return "profile";
     }
 
@@ -43,8 +42,8 @@ public class ProfileController {
         if (auth == null) {
             return "redirect:/login";
         }
-        String username = auth.getName();
-        Account existing = accountRepo.findById(username).orElse(null);
+
+        Account existing = accountRepo.findById(auth.getName()).orElse(null);
         if (existing != null) {
             existing.setFullname(account.getFullname());
             existing.setEmail(account.getEmail());
@@ -54,8 +53,16 @@ public class ProfileController {
             accountRepo.save(existing);
             model.addAttribute("success", "Cập nhật thành công!");
         }
-        model.addAttribute("account", existing);
-        model.addAttribute("list", supportRepo.findAll());
+
+        loadProfileModel(auth, model, existing);
         return "profile";
+    }
+
+    private void loadProfileModel(Authentication auth, Model model, Account account) {
+        Account current = account != null ? account : accountRepo.findById(auth.getName()).orElse(null);
+        model.addAttribute("account", current);
+        model.addAttribute("list", SecurityUtils.isAdmin(auth)
+                ? supportRepo.findAll()
+                : supportRepo.findByUsernameIgnoreCase(auth.getName()));
     }
 }

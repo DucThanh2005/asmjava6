@@ -1,6 +1,8 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.carstore.entity.Orders;
+import com.example.carstore.repository.OrderRepository;
+import com.example.carstore.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,15 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.carstore.entity.Orders;
-import com.example.carstore.repository.OrderRepository;
-
 @Controller
 @RequestMapping("/admin/orders")
 public class AdminOrderController {
 
-    @Autowired
-    OrderRepository orderRepo;
+    private final OrderRepository orderRepo;
+    private final OrderService orderService;
+
+    public AdminOrderController(OrderRepository orderRepo, OrderService orderService) {
+        this.orderRepo = orderRepo;
+        this.orderService = orderService;
+    }
 
     @GetMapping
     public String listOrders(Model model) {
@@ -37,7 +41,9 @@ public class AdminOrderController {
 
     @GetMapping("/delete/{id}")
     public String deleteOrder(@PathVariable Integer id) {
-        orderRepo.deleteById(id);
+        if (orderRepo.existsById(id)) {
+            orderService.deleteOrder(id);
+        }
         return "redirect:/admin/orders";
     }
 }

@@ -8,4 +8,6 @@ import com.example.carstore.entity.Car;
 public interface CarRepository extends JpaRepository<Car, Integer> {
 
     List<Car> findByNameContainingIgnoreCase(String name);
+
+    long countByBrandId(Integer brandId);
 }

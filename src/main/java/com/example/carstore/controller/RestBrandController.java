@@ -1,9 +1,17 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import com.example.carstore.entity.Brand;
 import com.example.carstore.repository.BrandRepository;
+import com.example.carstore.util.ResponseUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -13,55 +21,44 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class RestBrandController {
 
-    @Autowired
-    BrandRepository brandRepo;
+    private final BrandRepository brandRepo;
 
-    // GET all brands
+    public RestBrandController(BrandRepository brandRepo) {
+        this.brandRepo = brandRepo;
+    }
+
     @GetMapping
     public List<Brand> getAllBrands() {
         return brandRepo.findAll();
     }
 
-    // GET brand by ID
     @GetMapping("/{id}")
     public Map<String, Object> getBrandById(@PathVariable Integer id) {
-        Brand brand = brandRepo.findById(id).orElse(null);
-        if (brand == null) {
-            return Map.of("success", false, "message", "Brand not found");
-        }
-        return Map.of("success", true, "data", brand);
+        return brandRepo.findById(id)
+                .map(brand -> Map.<String, Object>of("success", true, "data", brand))
+                .orElse(ResponseUtils.fail("Brand not found"));
     }
 
-    // CREATE brand
     @PostMapping
     public Map<String, Object> createBrand(@RequestBody Brand brand) {
-        try {
-            Brand saved = brandRepo.save(brand);
-            return Map.of("success", true, "message", "Brand created successfully", "data", saved);
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error creating brand: " + e.getMessage());
-        }
+        Brand saved = brandRepo.save(brand);
+        return ResponseUtils.ok("Brand created successfully", "data", saved);
     }
 
-    // UPDATE brand
     @PutMapping("/{id}")
     public Map<String, Object> updateBrand(@PathVariable Integer id, @RequestBody Brand brand) {
-        Brand existing = brandRepo.findById(id).orElse(null);
-        if (existing == null) {
-            return Map.of("success", false, "message", "Brand not found");
-        }
-        existing.setName(brand.getName());
-        Brand updated = brandRepo.save(existing);
-        return Map.of("success", true, "message", "Brand updated successfully", "data", updated);
+        return brandRepo.findById(id).map(existing -> {
+            existing.setName(brand.getName());
+            return ResponseUtils.ok("Brand updated successfully", "data", brandRepo.save(existing));
+        }).orElse(ResponseUtils.fail("Brand not found"));
     }
 
-    // DELETE brand
     @DeleteMapping("/{id}")
     public Map<String, Object> deleteBrand(@PathVariable Integer id) {
         if (!brandRepo.existsById(id)) {
-            return Map.of("success", false, "message", "Brand not found");
+            return ResponseUtils.fail("Brand not found");
         }
         brandRepo.deleteById(id);
-        return Map.of("success", true, "message", "Brand deleted successfully");
+        return ResponseUtils.ok("Brand deleted successfully");
     }
 }

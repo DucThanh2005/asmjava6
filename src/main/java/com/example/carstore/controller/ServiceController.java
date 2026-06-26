@@ -1,19 +1,22 @@
 package com.example.carstore.controller;
 
-import com.example.carstore.entity.SupportRequest;
-import com.example.carstore.repository.SupportRequestRepository;
+import com.example.carstore.service.SupportRequestService;
+import com.example.carstore.util.SecurityUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ServiceController {
 
-    private final SupportRequestRepository supportRepo;
+    private final SupportRequestService supportService;
 
-    ServiceController(SupportRequestRepository supportRepo) {
-        this.supportRepo = supportRepo;
+    public ServiceController(SupportRequestService supportService) {
+        this.supportService = supportService;
     }
 
     @GetMapping("/service/book")
@@ -33,72 +36,46 @@ public class ServiceController {
     }
 
     @PostMapping("/service/book")
-    public String handleServiceBook(
-            @RequestParam String name,
-            @RequestParam String phone,
-            @RequestParam String carInfo,
-            @RequestParam String serviceType,
-            @RequestParam String date,
-            @RequestParam String time,
-            Model model) {
-
-        String content = serviceType;
-
-        SupportRequest req = new SupportRequest(name, phone, "service", content);
-        supportRepo.save(req);
-
+    public String handleServiceBook(@RequestParam String name,
+                                    @RequestParam String phone,
+                                    @RequestParam String carInfo,
+                                    @RequestParam String serviceType,
+                                    @RequestParam String date,
+                                    @RequestParam String time,
+                                    Authentication auth,
+                                    Model model) {
+        supportService.createServiceBooking(name, phone, carInfo, serviceType, date, time, auth);
         model.addAttribute("message", "Đặt lịch dịch vụ thành công!");
         return "service";
     }
 
     @PostMapping("/support")
-    public String handleSupport(
-            @RequestParam String name,
-            @RequestParam String phone,
-            @RequestParam String content,
-            @RequestParam String type,
-            Model model) {
-
-        SupportRequest req = new SupportRequest(name, phone, type, content);
-        supportRepo.save(req);
-
+    public String handleSupport(@RequestParam String name,
+                                @RequestParam String phone,
+                                @RequestParam String content,
+                                @RequestParam String type,
+                                Authentication auth,
+                                Model model) {
+        supportService.createSupport(name, phone, type, content, auth);
         model.addAttribute("message", "Gửi thành công!");
         model.addAttribute("type", type);
-
         return "support";
     }
 
-    // Xem danh sách yêu cầu
     @GetMapping("/history")
-    public String history(
-            @RequestParam(required = false) String type,
-            Model model) {
-
-        if (type != null) {
-            model.addAttribute("list",
-                    supportRepo.findByTypeIgnoreCase(type));
-        } else {
-            model.addAttribute("list",
-                    supportRepo.findAll());
-        }
-
+    public String history(@RequestParam(required = false) String type,
+                          Authentication auth,
+                          Model model) {
+        model.addAttribute("list", supportService.findHistory(type, auth));
+        model.addAttribute("isAdmin", SecurityUtils.isAdmin(auth));
         return "history";
     }
 
-    // Giả lập xử lý xong
     @GetMapping("/done/{id}")
     public String done(@PathVariable Integer id, Authentication auth) {
-        boolean isAdmin = auth != null && auth.getAuthorities().stream()
-                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
-
-        if (!isAdmin) {
-            return "redirect:/history";
+        if (SecurityUtils.isAdmin(auth)) {
+            supportService.markDone(id);
         }
-
-        supportRepo.findById(id).ifPresent(req -> {
-            req.setStatus("Đã xử lý");
-            supportRepo.save(req);
-        });
         return "redirect:/history";
     }
 }

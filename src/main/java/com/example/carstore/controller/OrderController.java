@@ -1,6 +1,11 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.carstore.entity.OrderDetail;
+import com.example.carstore.entity.Orders;
+import com.example.carstore.repository.OrderDetailRepository;
+import com.example.carstore.repository.OrderRepository;
+import com.example.carstore.service.CartService;
+import com.example.carstore.service.OrderService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,39 +15,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.carstore.entity.Car;
-import com.example.carstore.entity.CartItem;
-import com.example.carstore.entity.OrderDetail;
-import com.example.carstore.entity.Orders;
-import com.example.carstore.repository.OrderRepository;
-import com.example.carstore.repository.OrderDetailRepository;
-import com.example.carstore.service.CarService;
-import com.example.carstore.service.CartService;
-
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired
-    CartService cartService;
+    private final CartService cartService;
+    private final OrderService orderService;
+    private final OrderRepository orderRepo;
+    private final OrderDetailRepository detailRepo;
 
-    @Autowired
-    CarService carService;
-
-    @Autowired
-    OrderRepository orderRepo;
-
-    @Autowired
-    OrderDetailRepository detailRepo;
+    public OrderController(CartService cartService,
+                           OrderService orderService,
+                           OrderRepository orderRepo,
+                           OrderDetailRepository detailRepo) {
+        this.cartService = cartService;
+        this.orderService = orderService;
+        this.orderRepo = orderRepo;
+        this.detailRepo = detailRepo;
+    }
 
     @GetMapping("/checkout")
     public String checkout(@RequestParam(required = false) String address,
-            Model model,
-            HttpSession session) {
-
+                           Model model,
+                           HttpSession session) {
         if (cartService.getCart(session).isEmpty()) {
             model.addAttribute("error", "Không có sản phẩm nào để thanh toán!");
             return "cart";
@@ -51,59 +49,29 @@ public class OrderController {
         model.addAttribute("cart", cartService.getCart(session).values());
         model.addAttribute("total", cartService.getTotal(session));
         model.addAttribute("address", address == null ? "" : address);
-
         return "checkout";
     }
 
     @PostMapping("/place")
-    public String placeOrder(@RequestParam String address, Authentication auth, HttpSession session, Model model) {
+    public String placeOrder(@RequestParam String address,
+                             Authentication auth,
+                             HttpSession session,
+                             Model model) {
         if (auth == null) {
             return "redirect:/login";
         }
-        String username = auth.getName();
-        List<Map<String, Object>> cartItems = new java.util.ArrayList<>();
-        for (CartItem item : cartService.getCart(session).values()) {
-            Map<String, Object> map = new java.util.HashMap<>();
-            map.put("id", item.getId());
-            map.put("price", item.getPrice());
-            map.put("qty", item.getQuantity());
-            cartItems.add(map);
-        }
 
-        if (cartItems.isEmpty()) {
-
-            model.addAttribute("error", "Không có sản phẩm để thanh toán.");
-
+        try {
+            Orders order = orderService.checkout(auth.getName(), address, cartService.getCart(session));
+            cartService.clear(session);
+            return "redirect:/order/detail/" + order.getId();
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("cart", cartService.getCart(session).values());
-
-            model.addAttribute("total", 0);
-
+            model.addAttribute("total", cartService.getTotal(session));
             model.addAttribute("address", address);
-
             return "checkout";
         }
-
-        Orders order = new Orders();
-        order.setUsername(username);
-        order.setCreate_date(new Date());
-        order.setAddress(address);
-        order.setStatus("PENDING");
-        orderRepo.save(order);
-
-        for (CartItem item : cartService.getCart(session).values()) {
-            OrderDetail detail = new OrderDetail();
-            detail.setOrderId(order.getId());
-            Car car = carService.findById(item.getId());
-            detail.setCar(car);
-            detail.setPrice(item.getPrice());
-            detail.setQuantity(item.getQuantity());
-            detailRepo.save(detail);
-        }
-
-        // Clear cart
-        session.removeAttribute("cart");
-
-        return "redirect:/order/detail/" + order.getId();
     }
 
     @GetMapping("/my-orders")
@@ -111,9 +79,7 @@ public class OrderController {
         if (auth == null) {
             return "redirect:/login";
         }
-        String username = auth.getName();
-        List<Orders> orders = orderRepo.findByUsername(username);
-        model.addAttribute("orders", orders);
+        model.addAttribute("orders", orderRepo.findByUsername(auth.getName()));
         return "my-orders";
     }
 
@@ -122,18 +88,17 @@ public class OrderController {
         if (auth == null) {
             return "redirect:/login";
         }
-        String username = auth.getName();
+
         Orders order = orderRepo.findById(id).orElse(null);
-
-        if (order == null) {
+        if (order == null || !auth.getName().equals(order.getUsername())) {
             return "redirect:/order/my-orders";
         }
 
-        if (!order.getUsername().equals(username)) {
-            return "redirect:/order/my-orders";
-        }
         List<OrderDetail> details = detailRepo.findByOrderId(id);
-        double total = details.stream().mapToDouble(d -> d.getPrice() * d.getQuantity()).sum();
+        double total = details.stream()
+                .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
+                .sum();
+
         model.addAttribute("order", order);
         model.addAttribute("details", details);
         model.addAttribute("total", total);

@@ -1,12 +1,21 @@
 package com.example.carstore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 import com.example.carstore.entity.Account;
 import com.example.carstore.repository.AccountRepository;
+import com.example.carstore.util.ResponseUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -14,165 +23,124 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class RestProfileController {
 
-    @Autowired
-    AccountRepository accountRepo;
+    private final AccountRepository accountRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public RestProfileController(AccountRepository accountRepo, PasswordEncoder passwordEncoder) {
+        this.accountRepo = accountRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    // GET profile
     @GetMapping
     public Map<String, Object> getProfile(Authentication auth) {
         if (auth == null) {
-            return Map.of("success", false, "message", "Not authenticated");
+            return ResponseUtils.fail("Not authenticated");
         }
-        try {
-            String username = auth.getName();
-            Account account = accountRepo.findById(username).orElse(null);
-            if (account == null) {
-                return Map.of("success", false, "message", "Account not found");
-            }
-            return Map.of(
-                    "success", true,
-                    "username", account.getUsername(),
-                    "fullname", account.getFullname(),
-                    "email", account.getEmail(),
-                    "role", account.getRole());
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error fetching profile: " + e.getMessage());
-        }
+        return profileResponse(auth.getName());
     }
 
-    // UPDATE profile
     @PutMapping
     public Map<String, Object> updateProfile(@RequestBody Account account, Authentication auth) {
         if (auth == null) {
-            return Map.of("success", false, "message", "Not authenticated");
+            return ResponseUtils.fail("Not authenticated");
         }
-        try {
-            String username = auth.getName();
-            Account existing = accountRepo.findById(username).orElse(null);
-            if (existing == null) {
-                return Map.of("success", false, "message", "Account not found");
-            }
 
-            if (account.getFullname() != null && !account.getFullname().trim().isEmpty()) {
-                existing.setFullname(account.getFullname());
-            }
-            if (account.getEmail() != null && !account.getEmail().trim().isEmpty()) {
-                existing.setEmail(account.getEmail());
-            }
-
-            accountRepo.save(existing);
-            return Map.of("success", true, "message", "Profile updated successfully");
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error updating profile: " + e.getMessage());
+        Account existing = accountRepo.findById(auth.getName()).orElse(null);
+        if (existing == null) {
+            return ResponseUtils.fail("Account not found");
         }
+
+        if (hasText(account.getFullname())) existing.setFullname(account.getFullname());
+        if (hasText(account.getEmail())) existing.setEmail(account.getEmail());
+        accountRepo.save(existing);
+        return ResponseUtils.ok("Profile updated successfully");
     }
 
-    // CHANGE password
     @PostMapping("/change-password")
     public Map<String, Object> changePassword(@RequestBody Map<String, String> payload, Authentication auth) {
         if (auth == null) {
-            return Map.of("success", false, "message", "Not authenticated");
+            return ResponseUtils.fail("Not authenticated");
         }
-        try {
-            String username = auth.getName();
-            String oldPassword = payload.get("oldPassword");
-            String newPassword = payload.get("newPassword");
-            String confirmPassword = payload.get("confirmPassword");
 
-            if (oldPassword == null || oldPassword.trim().isEmpty()) {
-                return Map.of("success", false, "message", "Old password is required");
-            }
-            if (newPassword == null || newPassword.trim().isEmpty()) {
-                return Map.of("success", false, "message", "New password is required");
-            }
-            if (!newPassword.equals(confirmPassword)) {
-                return Map.of("success", false, "message", "Passwords do not match");
-            }
-            if (newPassword.equals(oldPassword)) {
-                return Map.of("success", false, "message", "New password must be different from old password");
-            }
-
-            Account account = accountRepo.findById(username).orElse(null);
-            if (account == null) {
-                return Map.of("success", false, "message", "Account not found");
-            }
-
-            // Check old password
-            if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
-                return Map.of("success", false, "message", "Old password is incorrect");
-            }
-
-            account.setPassword(passwordEncoder.encode(newPassword));
-            accountRepo.save(account);
-            return Map.of("success", true, "message", "Password changed successfully");
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error changing password: " + e.getMessage());
+        String oldPassword = payload == null ? null : payload.get("oldPassword");
+        String newPassword = payload == null ? null : payload.get("newPassword");
+        String confirmPassword = payload == null ? null : payload.get("confirmPassword");
+        String validation = validatePassword(oldPassword, newPassword, confirmPassword);
+        if (validation != null) {
+            return ResponseUtils.fail(validation);
         }
+
+        Account account = accountRepo.findById(auth.getName()).orElse(null);
+        if (account == null) {
+            return ResponseUtils.fail("Account not found");
+        }
+        if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
+            return ResponseUtils.fail("Old password is incorrect");
+        }
+
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepo.save(account);
+        return ResponseUtils.ok("Password changed successfully");
     }
 
-    // DELETE account
     @DeleteMapping
     public Map<String, Object> deleteAccount(Authentication auth) {
         if (auth == null) {
-            return Map.of("success", false, "message", "Not authenticated");
+            return ResponseUtils.fail("Not authenticated");
         }
-        try {
-            String username = auth.getName();
-            if (!accountRepo.existsById(username)) {
-                return Map.of("success", false, "message", "Account not found");
-            }
-            accountRepo.deleteById(username);
-            return Map.of("success", true, "message", "Account deleted successfully");
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error deleting account: " + e.getMessage());
+        if (!accountRepo.existsById(auth.getName())) {
+            return ResponseUtils.fail("Account not found");
         }
+        accountRepo.deleteById(auth.getName());
+        return ResponseUtils.ok("Account deleted successfully");
     }
 
-    // GET profile by username (for admin)
     @GetMapping("/{username}")
     public Map<String, Object> getProfileByUsername(@PathVariable String username) {
-        try {
-            Account account = accountRepo.findById(username).orElse(null);
-            if (account == null) {
-                return Map.of("success", false, "message", "Account not found");
-            }
-            return Map.of(
-                    "success", true,
-                    "username", account.getUsername(),
-                    "fullname", account.getFullname(),
-                    "email", account.getEmail(),
-                    "role", account.getRole());
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error fetching profile: " + e.getMessage());
-        }
+        return profileResponse(username);
     }
 
-    // VERIFY password
     @PostMapping("/verify-password")
     public Map<String, Object> verifyPassword(@RequestBody Map<String, String> payload, Authentication auth) {
         if (auth == null) {
-            return Map.of("success", false, "message", "Not authenticated");
+            return ResponseUtils.fail("Not authenticated");
         }
-        try {
-            String username = auth.getName();
-            String password = payload.get("password");
 
-            if (password == null || password.trim().isEmpty()) {
-                return Map.of("success", false, "message", "Password is required");
-            }
-
-            Account account = accountRepo.findById(username).orElse(null);
-            if (account == null) {
-                return Map.of("success", false, "message", "Account not found");
-            }
-
-            boolean matches = passwordEncoder.matches(password, account.getPassword());
-            return Map.of("success", true, "matches", matches);
-        } catch (Exception e) {
-            return Map.of("success", false, "message", "Error verifying password: " + e.getMessage());
+        String password = payload == null ? null : payload.get("password");
+        if (!hasText(password)) {
+            return ResponseUtils.fail("Password is required");
         }
+
+        Account account = accountRepo.findById(auth.getName()).orElse(null);
+        if (account == null) {
+            return ResponseUtils.fail("Account not found");
+        }
+        return Map.of("success", true, "matches", passwordEncoder.matches(password, account.getPassword()));
+    }
+
+    private Map<String, Object> profileResponse(String username) {
+        Account account = accountRepo.findById(username).orElse(null);
+        if (account == null) {
+            return ResponseUtils.fail("Account not found");
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("username", account.getUsername());
+        result.put("fullname", account.getFullname());
+        result.put("email", account.getEmail());
+        result.put("role", account.getRole());
+        return result;
+    }
+
+    private String validatePassword(String oldPassword, String newPassword, String confirmPassword) {
+        if (!hasText(oldPassword)) return "Old password is required";
+        if (!hasText(newPassword)) return "New password is required";
+        if (!newPassword.equals(confirmPassword)) return "Passwords do not match";
+        if (newPassword.equals(oldPassword)) return "New password must be different from old password";
+        return null;
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 }

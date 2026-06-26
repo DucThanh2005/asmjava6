@@ -67,10 +67,11 @@ public class SecurityConfig {
                                 .antMatchers("/api/cart/**", "/cart/**")
                                 .permitAll()
 
-                                // HISTORY
+                                // HISTORY: người dùng đăng nhập xem được lịch sử yêu cầu
                                 .antMatchers("/history")
                                 .authenticated()
 
+                                // DONE: chỉ admin được đánh dấu đã xử lý
                                 .antMatchers("/done/**")
                                 .hasRole("ADMIN")
 
@@ -82,10 +83,18 @@ public class SecurityConfig {
                                                 "/car/delete/**",
                                                 "/admin/**",
                                                 "/api/admin/**",
+                                                "/api/upload",
                                                 "/api/upload/**")
                                 .hasRole("ADMIN")
 
                                 .antMatchers("/api/cars/**")
+                                .hasRole("ADMIN")
+
+                                // SUPPORT / SERVICE API
+                                .antMatchers(HttpMethod.POST, "/api/support")
+                                .permitAll()
+
+                                .antMatchers("/api/support", "/api/support/**")
                                 .hasRole("ADMIN")
 
                                 // USER API
