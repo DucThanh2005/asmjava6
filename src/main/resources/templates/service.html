@@ -79,7 +79,7 @@
         <div class="card p-4 border rounded-4 bg-white shadow-sm mx-auto" style="max-width: 600px;">
             <h3 class="fw-bold mb-3 text-center text-primary">Đặt lịch hẹn dịch vụ Online</h3>
 
-            <form action="/support" method="post">
+            <form action="/service/book" method="post">
                 <input type="hidden" name="type" value="service">
 
                 <input type="hidden" name="content" value="Yêu cầu đặt lịch dịch vụ">
@@ -123,10 +123,6 @@
 
                 <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">Xác nhận đặt lịch</button>
             </form>
-
-            <div class="text-center mt-3 border-top pt-3">
-                <a href="/history" class="btn btn-outline-primary btn-sm rounded-pill px-3">Xem lịch sử yêu cầu</a>
-            </div>
 
             <p class="text-success text-center mt-3 fw-bold small" th:if="${message != null}" th:text="${message}"></p>
         </div>

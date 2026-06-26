@@ -67,6 +67,13 @@ public class SecurityConfig {
                                 .antMatchers("/api/cart/**", "/cart/**")
                                 .permitAll()
 
+                                // HISTORY
+                                .antMatchers("/history")
+                                .authenticated()
+
+                                .antMatchers("/done/**")
+                                .hasRole("ADMIN")
+
                                 // ADMIN
                                 .antMatchers(
                                                 "/car/create",

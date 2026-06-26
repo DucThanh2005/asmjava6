@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.carstore.entity.Account;
 import com.example.carstore.repository.AccountRepository;
+import com.example.carstore.repository.SupportRequestRepository;
 
 @Controller
 @RequestMapping("/profile")
@@ -22,6 +23,9 @@ public class ProfileController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    SupportRequestRepository supportRepo;
+
     @GetMapping
     public String profile(Authentication auth, Model model) {
         if (auth == null) {
@@ -30,6 +34,7 @@ public class ProfileController {
         String username = auth.getName();
         Account account = accountRepo.findById(username).orElse(null);
         model.addAttribute("account", account);
+        model.addAttribute("list", supportRepo.findAll());
         return "profile";
     }
 
@@ -50,6 +55,7 @@ public class ProfileController {
             model.addAttribute("success", "Cập nhật thành công!");
         }
         model.addAttribute("account", existing);
+        model.addAttribute("list", supportRepo.findAll());
         return "profile";
     }
 }

@@ -49,6 +49,8 @@ CREATE TABLE Orders (
     username NVARCHAR(50) NOT NULL,
     create_date DATETIME DEFAULT GETDATE(),
     address NVARCHAR(255),
+    registration_address NVARCHAR(255),
+    payment_method NVARCHAR(50),
     status NVARCHAR(50),
     FOREIGN KEY (username) REFERENCES Account(username)
 );
@@ -63,7 +65,22 @@ CREATE TABLE OrderDetail (
     FOREIGN KEY (car_id) REFERENCES Car(id)
 );
 
--- ===== 3. NHẬP DỮ LIỆU BRAND (HÃN) =====
+-- ===== BẢNG SUPPORT / SERVICE =====
+-- Dùng cho chức năng Hỗ trợ, Đặt lịch dịch vụ, Lịch sử yêu cầu
+CREATE TABLE support_request (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(255),
+    phone NVARCHAR(50),
+    type NVARCHAR(255),
+    content NVARCHAR(1000),
+    status NVARCHAR(255) DEFAULT N'Chờ xử lý',
+    car_info NVARCHAR(255),
+    service_type NVARCHAR(255),
+    appointment_date NVARCHAR(50),
+    appointment_time NVARCHAR(50)
+);
+
+-- ===== 3. NHẬP DỮ LIỆU BRAND (HÃNG) =====
 INSERT INTO Brand(name) VALUES 
 (N'Toyota'),
 (N'BMW'),
@@ -86,7 +103,12 @@ INSERT INTO Account(username, password, fullname, email, role) VALUES
 ('user2', '{noop}123', N'Trần Thị B', 'user2@carstore.com', 'ROLE_USER'),
 ('user3', '{noop}123', N'Lê Văn C', 'user3@carstore.com', 'ROLE_USER');
 
--- ===== 6. KIỂM TRA DỮ LIỆU =====
+-- ===== 6. DỮ LIỆU MẪU SUPPORT / SERVICE =====
+INSERT INTO support_request(name, phone, type, content, status, car_info, service_type, appointment_date, appointment_time) VALUES
+(N'Nguyễn Văn A', N'0909123456', N'service', N'Yêu cầu đặt lịch dịch vụ', N'Chờ xử lý', N'51G-123.45 / Ford Ranger', N'Bảo dưỡng định kỳ', N'2026-06-25', N'09:00'),
+(N'Trần Thị B', N'0912345678', N'chat', N'Tư vấn thủ tục mua xe trả góp', N'Chờ xử lý', NULL, NULL, NULL, NULL);
+
+-- ===== 7. KIỂM TRA DỮ LIỆU =====
 PRINT '========================================';
 PRINT 'KIỂM TRA DỮ LIỆU ĐÃ NHẬP';
 PRINT '========================================';
@@ -100,11 +122,15 @@ SELECT * FROM Car;
 PRINT '--- Account (Tài khoản) ---';
 SELECT * FROM Account;
 
+PRINT '--- Support Request (Hỗ trợ / Dịch vụ) ---';
+SELECT * FROM support_request;
+
 PRINT '--- Tóm tắt ---';
 SELECT 
     (SELECT COUNT(*) FROM Brand) AS [Số Hãng],
     (SELECT COUNT(*) FROM Car) AS [Số Xe],
-    (SELECT COUNT(*) FROM Account) AS [Số Tài khoản];
+    (SELECT COUNT(*) FROM Account) AS [Số Tài khoản],
+    (SELECT COUNT(*) FROM support_request) AS [Số Yêu cầu Hỗ trợ];
 
 GO
 
