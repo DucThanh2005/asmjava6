@@ -21,20 +21,31 @@ public class SupportRequestService {
         this.supportRepo = supportRepo;
     }
 
-    public SupportRequest createSupport(String name, String phone, String type, String content, Authentication auth) {
-        SupportRequest request = new SupportRequest(name, phone, type, content);
+    public SupportRequest createSupport(
+            String name,
+            String phone,
+            String type,
+            String content,
+            Authentication auth) {
+        SupportRequest request = new SupportRequest(
+                name,
+                phone,
+                type,
+                content);
         request.setUsername(SecurityUtils.username(auth));
         request.setStatus(STATUS_PENDING);
         return supportRepo.save(request);
+        
     }
 
-    public SupportRequest createServiceBooking(String name,
-                                               String phone,
-                                               String carInfo,
-                                               String serviceType,
-                                               String date,
-                                               String time,
-                                               Authentication auth) {
+    public SupportRequest createServiceBooking(
+            String name,
+            String phone,
+            String carInfo,
+            String serviceType,
+            String date,
+            String time,
+            Authentication auth) {
         SupportRequest request = new SupportRequest(
                 name,
                 phone,

@@ -91,10 +91,17 @@ public class SecurityConfig {
                                 .hasRole("ADMIN")
 
                                 // SUPPORT / SERVICE API
+                                // SUPPORT API
+                                .antMatchers(HttpMethod.GET, "/api/support/**")
+                                .permitAll()
+
                                 .antMatchers(HttpMethod.POST, "/api/support")
                                 .permitAll()
 
-                                .antMatchers("/api/support", "/api/support/**")
+                                .antMatchers(HttpMethod.PUT, "/api/support/**")
+                                .hasRole("ADMIN")
+
+                                .antMatchers(HttpMethod.DELETE, "/api/support/**")
                                 .hasRole("ADMIN")
 
                                 // USER API

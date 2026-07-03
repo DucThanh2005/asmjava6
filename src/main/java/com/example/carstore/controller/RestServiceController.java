@@ -30,18 +30,12 @@ public class RestServiceController {
     }
 
     @GetMapping
-    public Map<String, Object> getAllSupportRequests(Authentication auth) {
-        if (!SecurityUtils.isAdmin(auth)) {
-            return ResponseUtils.fail("Access denied");
-        }
+    public Map<String, Object> getAllSupportRequests() {
         return Map.of("success", true, "data", supportRepo.findAll());
     }
 
     @GetMapping("/{id}")
-    public Map<String, Object> getSupportRequest(@PathVariable Integer id, Authentication auth) {
-        if (!SecurityUtils.isAdmin(auth)) {
-            return ResponseUtils.fail("Access denied");
-        }
+    public Map<String, Object> getSupportRequest(@PathVariable Integer id) {
         return supportRepo.findById(id)
                 .map(request -> Map.<String, Object>of("success", true, "data", request))
                 .orElse(ResponseUtils.fail("Support request not found"));
@@ -68,8 +62,8 @@ public class RestServiceController {
 
     @PutMapping("/{id}/status")
     public Map<String, Object> updateSupportStatus(@PathVariable Integer id,
-                                                   @RequestBody Map<String, String> payload,
-                                                   Authentication auth) {
+            @RequestBody Map<String, String> payload,
+            Authentication auth) {
         if (!SecurityUtils.isAdmin(auth)) {
             return ResponseUtils.fail("Access denied");
         }
